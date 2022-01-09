@@ -702,11 +702,10 @@ class FrontEnd:
         self.main_page()
 
     def register_user(self):
-        # Check ID Entry and Full Name Entry for existing users
-        user_id = self.user_id_entry.get()
-        user_name = self.user_name_entry.get()
-        # If it finds User ID or User Name skip the rest of data collection
-        if self.check_records(user_id, user_name) != 1 or self.user_birthday_entry.get() != '':
+        # Check ID Entry and Full Name Entry for existing users, if it finds User ID or User Name skip the rest of data collection
+        if self.check_records(self.user_id_entry.get(), self.user_name_entry.get()) != 1 or self.user_birthday_entry.get() != '':
+            user_id = self.user_id_entry.get()
+            user_name = self.user_name_entry.get()
             # If there is no assigned user id create one
             if user_id == '':
                 user_id = len(self.complete_students_data)
@@ -740,6 +739,10 @@ class FrontEnd:
             payment_date = self.payment_day_entry.get()
             amount_paid = self.amount_paid_entry.get()
             amount_of_hours = self.hours_of_access_entry.get()
+            if birthday != '':
+                for i in range(len(self.complete_students_data)):
+                    if self.complete_students_data[i][2] == birthday:
+                        self.complete_students_data.pop(i)
             self.complete_students_data.append([user_id, user_name, birthday, parent_address, parent_telephone, parent_email, father_name, mother_name, inscription_date, payment_date, amount_paid, amount_of_hours])
             json.dump(self.complete_students_data, open('Students', 'w'))
 
@@ -790,6 +793,7 @@ class FrontEnd:
                     self.amount_paid_entry.delete(0, END)
                     self.hours_of_access_entry.delete(0, END)
                     # Get student information written into Entries
+                    print(i[1])
                     self.user_name_entry.insert(END, i[1])
                     self.user_birthday_entry.insert(END, i[2])
                     self.parent_address_entry.insert(END, i[3])
