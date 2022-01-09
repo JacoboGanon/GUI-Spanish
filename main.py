@@ -272,7 +272,7 @@ class FrontEnd:
         counter = 0
         for product_information in self.complete_products_data:
             counter += 1
-            self.listbox_of_products_id.insert(counter, product_information[0])
+            self.listbox_of_products_id.insert(counter, product_information[1])
         self.listbox_of_products_id.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
         self.remove_product_button = Button(self.frame4_admin_page, text="Quitar Producto", command=self.remove_product, bg=self.ORANGE, fg=self.WHITE)
         self.remove_product_button.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
@@ -281,7 +281,7 @@ class FrontEnd:
         product = self.listbox_of_products_id.get(self.listbox_of_products_id.curselection())
         try:
             for p in range(len(self.complete_products_data)):
-                if product == self.complete_products_data[p][0]:
+                if product == self.complete_products_data[p][1]:
                     self.complete_products_data.remove(self.complete_products_data[p])
         except IndexError:
             pass
