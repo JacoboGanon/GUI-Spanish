@@ -640,8 +640,8 @@ class FrontEnd:
     def charge(self):
         for i in self.list_of_labels:
             for p in self.complete_products_data:
-                if i[0] == p[0]:
-                    p[2] -= i[1]
+                if i[0] == p[1]:
+                    p[4] -= i[1]
         for i in self.register_products_frame.winfo_children():
             if 'Total' not in i['text']:
                 i.destroy()
