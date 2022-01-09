@@ -683,13 +683,19 @@ class FrontEnd:
         self.register_user_information = Button(self.frame_14_add_student, text='Registrar/Actualizar Informacion', font=20, command=self.register_user).place(relheight=.8, relwidth=.9, rely=.1, relx=.05)
 
     def remove_user_information_interface(self):
+        # Iterate through all frames
         for i in root.winfo_children():
-            if i != root.winfo_children()[0]:
-                i.destroy()
+            if i != root.winfo_children()[0]:  # Don't Destroy main Frame
+                i.destroy()  # Destroy current Frame iteration
         self.main_page()
 
     def register_user(self):
-        pass
+        # Iterate through all frames
+        for i in root.winfo_children():
+            if i != root.winfo_children()[0] and i != root.winfo_children()[1]:  # Don't Destroy main Frame or Return Button
+                i.destroy()  # Destroy current Frame Iteration
+        # Change Return button Command
+        self.return_button.configure(command=self.remove_user_information_interface)
 
     def remove_student(self):
         self.remove_everything()
