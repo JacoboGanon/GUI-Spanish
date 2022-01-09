@@ -647,13 +647,13 @@ class FrontEnd:
             if i == root.winfo_children()[0]:
                 pass
             else:
-                i.place(relx=counter * .155 + .005, rely=row * .105 + .005, relwidth=.13, relheight=.08)
+                i.place(relx=counter * .165 + .005, rely=row * .105 + .005, relwidth=.16, relheight=.08)
                 counter += 1
             if counter == 6:
                 counter = 0
                 row += 1
         # Place return button
-        self.return_button = Button(self.frame1_add_student, font=30, text="Regresar", command=self.main_page, bg=self.ORANGE, fg=self.WHITE)
+        self.return_button = Button(self.frame1_add_student, font=30, text="Regresar", command=self.remove_user_information_interface, bg=self.ORANGE, fg=self.WHITE)
         self.return_button.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
         # Place User Questions
         self.user_id_label = Label(self.frame2_add_student, font=40, text='ID (Buscar por Numero)').place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
@@ -680,7 +680,13 @@ class FrontEnd:
         self.amount_paid_entry = Entry(self.frame12_add_student, font=20).place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
         self.hours_of_access_label = Label(self.frame13_add_student, font=40, text='Accesso a horas').place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
         self.hours_of_access_entry = Entry(self.frame13_add_student).place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
-        self.register_user_information = Button(self.frame_14_add_student, text='Registrar/Actualizar Informacion', font=40, command=self.register_user).place(relheight=.8, relwidth=.9, rely=.1, relx=.05)
+        self.register_user_information = Button(self.frame_14_add_student, text='Registrar/Actualizar Informacion', font=20, command=self.register_user).place(relheight=.8, relwidth=.9, rely=.1, relx=.05)
+
+    def remove_user_information_interface(self):
+        for i in root.winfo_children():
+            if i != root.winfo_children()[0]:
+                i.destroy()
+        self.main_page()
 
     def register_user(self):
         pass
