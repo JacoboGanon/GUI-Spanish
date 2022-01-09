@@ -387,14 +387,16 @@ class FrontEnd:
         self.add_activity_entry = Entry(self.frame1_activity_page)
         self.add_activity_entry.place(relx=0.05, rely=.05, relwidth=0.9, relheight=0.4)
         self.add_activity_label = Label(self.frame1_activity_page, bg=self.GREY, text='Actividad')
-        self.add_levels_entry = Entry(self.frame2_activity_page)
+        self.add_levels_entry = Entry(self.frame2_activity_page, fg='grey')
         self.add_levels_entry.place(relx=.05, rely=.05, relwidth=.9, relheight=.4)
+        self.add_levels_entry.insert(0, 'Ejemplo: (1, 2, 3) o (blanco, amarillo, verde)')
+        self.add_levels_entry.bind('<FocusIn>', self.focus_in1)
         self.add_levels_label = Label(self.frame2_activity_page, bg=self.GREY, text='Niveles')
         self.add_activity_button = Button(self.frame3_activity_page, bg=self.ORANGE, fg=self.WHITE, text='Añadir Actividad', command=self.add_activity_to_sell)
         self.add_activity_button.place(relx=0.05, rely=.1, relwidth=.9, relheight=.8)
 
     def add_activity_to_sell(self):
-        self.complete_classes_data.append([self.add_activity_entry.get()])
+        self.complete_classes_data.append([self.add_activity_entry.get(), self.add_levels_entry.get()])
         json.dump(self.complete_classes_data, open('Available_Classes', 'w'))
 
     def check_activity(self):
@@ -898,6 +900,10 @@ class FrontEnd:
     def focus_in(self, _):
         self.time_schedule_entry.delete(0, END)
         self.time_schedule_entry.config(fg='black')
+
+    def focus_in1(self):
+        self.add_levels_entry.delete(0, END)
+        self.add_levels_entry.config(fg='black')
 
 if __name__ == '__main__':
     front = FrontEnd()
