@@ -761,12 +761,13 @@ class FrontEnd:
             payment_date = self.payment_day_entry.get()
             amount_paid = self.amount_paid_entry.get()
             amount_of_hours = self.hours_of_access_entry.get()
+            security_link = self.security_link_entry.get()
             counter = 0
             while counter < len(self.complete_students_data):
                 if user_id == self.complete_students_data[counter][0]:
                     self.complete_students_data.pop(counter)
                 counter += 1
-            self.complete_students_data.append([user_id, user_name, birthday, parent_address, parent_telephone, parent_email, father_name, mother_name, inscription_date, payment_date, amount_paid, amount_of_hours])
+            self.complete_students_data.append([user_id, user_name, birthday, parent_address, parent_telephone, parent_email, father_name, mother_name, inscription_date, payment_date, amount_paid, amount_of_hours, security_link])
             json.dump(self.complete_students_data, open('Students', 'w'))
             # Create Frame for main grid
             self.frame16_add_student = Frame(root, bg='#9fb5b7')
@@ -803,6 +804,7 @@ class FrontEnd:
                     self.payment_day_entry.delete(0, END)
                     self.amount_paid_entry.delete(0, END)
                     self.hours_of_access_entry.delete(0, END)
+                    self.security_link_entry.delete(0, END)
                     # Get student information written into Entries
                     self.user_birthday_entry.insert(END, i[2])
                     self.parent_address_entry.insert(END, i[3])
@@ -814,6 +816,7 @@ class FrontEnd:
                     self.payment_day_entry.insert(END, i[9])
                     self.amount_paid_entry.insert(END, i[10])
                     self.hours_of_access_entry.insert(END, i[11])
+                    self.security_link_entry.insert(END, i[12])
                     # Skip rest of register_user if it finds user id and name
                     return 1
 
@@ -833,6 +836,7 @@ class FrontEnd:
                     self.payment_day_entry.delete(0, END)
                     self.amount_paid_entry.delete(0, END)
                     self.hours_of_access_entry.delete(0, END)
+                    self.security_link_entry.delete(0, END)
                     # Get student information written into Entries
                     self.user_name_entry.insert(END, i[1])
                     self.user_birthday_entry.insert(END, i[2])
@@ -845,6 +849,7 @@ class FrontEnd:
                     self.payment_day_entry.insert(END, i[9])
                     self.amount_paid_entry.insert(END, i[10])
                     self.hours_of_access_entry.insert(END, i[11])
+                    self.security_link_entry.insert(END, i[12])
                     # Skip rest of register_user if it finds user id
                     return 1
         # Check by Name
@@ -863,6 +868,7 @@ class FrontEnd:
                     self.payment_day_entry.delete(0, END)
                     self.amount_paid_entry.delete(0, END)
                     self.hours_of_access_entry.delete(0, END)
+                    self.security_link_entry.delete(0, END)
                     # Get student information written into Entries
                     self.user_id_entry.insert(END, i[0])
                     self.user_birthday_entry.insert(END, i[2])
@@ -875,6 +881,7 @@ class FrontEnd:
                     self.payment_day_entry.insert(END, i[9])
                     self.amount_paid_entry.insert(END, i[10])
                     self.hours_of_access_entry.insert(END, i[11])
+                    self.security_link_entry.insert(END, i[12])
                     # Skip rest of register_user if it finds username
                     return 1
 
