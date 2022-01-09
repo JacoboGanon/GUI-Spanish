@@ -1,5 +1,5 @@
 # Imports
-from tkinter import Tk, Label, Frame, Entry, Button, font, Listbox, messagebox, END
+from tkinter import Tk, Label, Frame, Entry, Button, font, Listbox, messagebox, END, Checkbutton, IntVar
 from tkinter.ttk import Combobox
 import os
 import json
@@ -17,7 +17,7 @@ class FrontEnd:
         # Overriding default-font with custom settings
         # i.e changing font-family, size and weight
         self.defaultFont.configure(family="Times",
-                                   size=16)
+                                   size=20)
         # Heights (Format = self.height, number of columns, number in column)
         self.total_price = 0
         self.height1_1 = 0.5
@@ -635,8 +635,9 @@ class FrontEnd:
         self.frame11_add_student = Frame(root)
         self.frame12_add_student = Frame(root)
         self.frame13_add_student = Frame(root)
-        self.frame_14_add_student = Frame(root)
-        # Place 14 frames
+        self.frame14_add_student = Frame(root)
+        self.frame15_add_student = Frame(root)
+        # Place 15 frames
         counter = 0
         row = 0
         for i in root.winfo_children():
@@ -646,7 +647,7 @@ class FrontEnd:
                 counter = 0
                 row += 1
         # Place return button
-        self.return_button = Button(self.frame1_add_student, font=('Times', 15), text="Regresar", command=self.remove_user_information_interface, bg=self.ORANGE, fg=self.WHITE)
+        self.return_button = Button(self.frame1_add_student, font=('Times', 20), text="Regresar", command=self.remove_user_information_interface, bg=self.ORANGE, fg=self.WHITE)
         self.return_button.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
         # Place User Questions
         self.user_id_label = Label(self.frame2_add_student, font=('Times', 15), text='ID (Buscar por Numero)')
@@ -693,11 +694,15 @@ class FrontEnd:
         self.amount_paid_label.place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
         self.amount_paid_entry = Entry(self.frame12_add_student)
         self.amount_paid_entry.place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
-        self.hours_of_access_label = Label(self.frame13_add_student, font=('Times', 15), text='Accesso a horas')
+        self.hours_of_access_label = Label(self.frame13_add_student, font=('Times', 15), text='Accesso a Horas')
         self.hours_of_access_label.place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
         self.hours_of_access_entry = Entry(self.frame13_add_student)
         self.hours_of_access_entry.place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
-        self.register_user_information = Button(self.frame_14_add_student, text='Registrar/Actualizar Informacion', command=self.register_user)
+        self.security_link_label = Label(self.frame14_add_student, font=('Times', 15), text='Link de Seguro')
+        self.security_link_label.place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
+        self.security_link_entry = Entry(self.frame14_add_student)
+        self.security_link_entry.place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
+        self.register_user_information = Button(self.frame15_add_student, text='Registrar/Actualizar Informacion', command=self.register_user, font=('Times', 15))
         self.register_user_information.place(relheight=.8, relwidth=.9, rely=.1, relx=.05)
 
     def remove_user_information_interface(self):
@@ -759,10 +764,23 @@ class FrontEnd:
             self.complete_students_data.append([user_id, user_name, birthday, parent_address, parent_telephone, parent_email, father_name, mother_name, inscription_date, payment_date, amount_paid, amount_of_hours])
             json.dump(self.complete_students_data, open('Students', 'w'))
             # Create Frame for main grid
-            Frame(root, bg=self.GREY).place(rely=.32, relx=.2, relheight=.6, relwidth=.8)
-            # Create Main Grid
+            self.frame16_add_student = Frame(root, bg='#9fb5b7')
+            self.frame16_add_student.place(rely=.35, relx=.1, relheight=.6, relwidth=.8)
+            # Create Grid
+            Label(self.frame16_add_student, text='Dia', bg='#9fb5b7', font=('Times', 20)).grid(row=1, column=0, padx=50, pady=35)
+            Label(self.frame16_add_student, text='Nivel', bg='#9fb5b7', font=('Times', 20)).grid(row=2, column=0, padx=50, pady=35)
+            Label(self.frame16_add_student, text='Horario', bg='#9fb5b7', font=('Times', 20)).grid(row=3, column=0, padx=50, pady=35)
+            Label(self.frame16_add_student, text='Profesor', bg='#9fb5b7', font=('Times', 20)).grid(row=4, column=0, padx=50, pady=35)
+            Label(self.frame16_add_student, text='Cupo', bg='#9fb5b7', font=('Times', 20)).grid(row=5, column=0, padx=50, pady=35)
+            column = 1
+            day_of_week = ('L', 'M', 'M', 'J', 'V')
             for i in self.complete_classes_data:
-                activity = i[0]
+                Label(self.frame16_add_student, text=i[0], bg='#9fb5b7', font=('Times', 20)).grid(row=0, column=column, padx=50, pady=20)
+                temp_frame = Frame(self.frame16_add_student, bg='#9fb5b7')
+                temp_frame.grid(row=1, column=column, padx=10, pady=35)
+                for p in range(0, 5):
+                    Checkbutton(temp_frame, text=day_of_week[p], variable=IntVar(), font=('Times', 12)).grid(row=0, column=p, sticky='s', padx=5)
+                column += 1
 
     def check_records(self, user_id, user_name):
         # Check if there is an ID and name
