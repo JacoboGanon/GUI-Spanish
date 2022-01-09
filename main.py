@@ -729,6 +729,17 @@ class FrontEnd:
                             counter += 1
                     if counter == len(self.complete_students_data):
                         break
+            # Get the rest of the information
+            birthday = self.user_birthday_entry.get()
+            parent_address = self.parent_address_entry.get()
+            parent_telephone = self.parent_phone_entry.get()
+            parent_email = self.parent_email_entry.get()
+            father_name = self.father_name_entry.get()
+            mother_name = self.mother_name_entry.get()
+            inscription_date = self.inscription_date_entry.get()
+            payment_date = self.payment_day_entry.get()
+            amount_paid = self.amount_paid_entry.get()
+            amount_of_hours = self.hours_of_access_entry.get()
 
 
     def check_records(self, user_id, user_name):
@@ -736,14 +747,56 @@ class FrontEnd:
         if user_id != '':
             for i in self.complete_students_data:
                 if user_id == i[0]:
+                    # Delete all Entries' information
+                    self.user_name_entry.delete(0, END)
+                    self.user_birthday_entry.delete(0, END)
+                    self.parent_address_entry.delete(0, END)
+                    self.parent_phone_entry.delete(0, END)
+                    self.parent_email_entry.delete(0, END)
+                    self.father_name_entry.delete(0, END)
+                    self.mother_name_entry.delete(0, END)
+                    self.inscription_date_entry.delete(0, END)
+                    self.payment_day_entry.delete(0, END)
+                    self.hours_of_access_entry.delete(0, END)
                     # Get student information written into Entries
+                    self.user_name_entry.insert(END, i[1])
+                    self.user_birthday_entry.insert(END, i[2])
+                    self.parent_address_entry.insert(END, i[3])
+                    self.parent_phone_entry.insert(END, i[4])
+                    self.parent_email_entry.insert(END, i[5])
+                    self.father_name_entry.insert(END, i[6])
+                    self.mother_name_entry.insert(END, i[7])
+                    self.inscription_date_entry.insert(END, i[8])
+                    self.payment_day_entry.insert(END, i[9])
+                    self.hours_of_access_entry.insert(END, i[10])
                     # Skip rest of register_user if it finds user id
                     return 1
         # Check by Name
         if user_name != '':
             for i in self.complete_students_data:
                 if user_name == i[1]:
+                    # Delete all Entries' information
+                    self.user_id_entry.delete(0, END)
+                    self.user_birthday_entry.delete(0, END)
+                    self.parent_address_entry.delete(0, END)
+                    self.parent_phone_entry.delete(0, END)
+                    self.parent_email_entry.delete(0, END)
+                    self.father_name_entry.delete(0, END)
+                    self.mother_name_entry.delete(0, END)
+                    self.inscription_date_entry.delete(0, END)
+                    self.payment_day_entry.delete(0, END)
+                    self.hours_of_access_entry.delete(0, END)
                     # Get student information written into Entries
+                    self.user_name_entry.insert(END, i[0])
+                    self.user_birthday_entry.insert(END, i[2])
+                    self.parent_address_entry.insert(END, i[3])
+                    self.parent_phone_entry.insert(END, i[4])
+                    self.parent_email_entry.insert(END, i[5])
+                    self.father_name_entry.insert(END, i[6])
+                    self.mother_name_entry.insert(END, i[7])
+                    self.inscription_date_entry.insert(END, i[8])
+                    self.payment_day_entry.insert(END, i[9])
+                    self.hours_of_access_entry.insert(END, i[10])
                     # Skip rest of register_user if it finds username
                     return 1
 
