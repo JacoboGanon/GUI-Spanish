@@ -9,7 +9,6 @@ root.geometry('%dx%d' % (root.winfo_screenwidth(), root.winfo_screenheight()))
 
 # Add scrollbar
 main_frame = Frame(root)
-main_frame.pack(fill='both', expand=1)
 
 
 # Main Loop
@@ -626,15 +625,65 @@ class FrontEnd:
     def add_student(self):
         self.remove_everything()
         self.return_button.destroy()
-        # Left and Right Frame
-        self.left_frame = Frame(root)
-        self.left_frame.place(relwidth=.15, relheight=1)
-        self.right_frame = Frame(root)
-        self.right_frame.place(relx=.15, relheight=1, relwidth=.85)
-        # Re-create Return Button
-        self.return_button = Button(self.left_frame, font="bold", text="Regresar", command=self.main_page, bg=self.ORANGE, fg=self.WHITE)
-        self.return_button.place(relwidth=.8666667, relheight=.06)
-        # Create Possible Activities
+        # Create 14 frames
+        self.frame1_add_student = Frame(root)
+        self.frame2_add_student = Frame(root)
+        self.frame3_add_student = Frame(root)
+        self.frame4_add_student = Frame(root)
+        self.frame5_add_student = Frame(root)
+        self.frame6_add_student = Frame(root)
+        self.frame7_add_student = Frame(root)
+        self.frame8_add_student = Frame(root)
+        self.frame9_add_student = Frame(root)
+        self.frame10_add_student = Frame(root)
+        self.frame11_add_student = Frame(root)
+        self.frame12_add_student = Frame(root)
+        self.frame13_add_student = Frame(root)
+        self.frame_14_add_student = Frame(root)
+        # Place 14 frames
+        counter = 0
+        row = 0
+        for i in root.winfo_children():
+            if i == root.winfo_children()[0]:
+                pass
+            else:
+                i.place(relx=counter * .155 + .005, rely=row * .105 + .005, relwidth=.13, relheight=.08)
+                counter += 1
+            if counter == 6:
+                counter = 0
+                row += 1
+        # Place return button
+        self.return_button = Button(self.frame1_add_student, font=30, text="Regresar", command=self.main_page, bg=self.ORANGE, fg=self.WHITE)
+        self.return_button.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
+        # Place User Questions
+        self.user_id_label = Label(self.frame2_add_student, font=40, text='ID (Buscar por Numero)').place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
+        self.user_id_entry = Entry(self.frame2_add_student, font=20).place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
+        self.user_name_label = Label(self.frame3_add_student, font=40, text='Nombre Completo Alumno').place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
+        self.user_name_entry = Entry(self.frame3_add_student, font=20).place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
+        self.user_birthday_label = Label(self.frame4_add_student, font=40, text='Fecha de Nacimiento').place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
+        self.user_birthday_entry = Entry(self.frame4_add_student, font=20).place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
+        self.parent_address_label = Label(self.frame5_add_student, font=40, text='Direccion').place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
+        self.parent_address_entry = Entry(self.frame5_add_student, font=20).place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
+        self.parent_phone_label = Label(self.frame6_add_student, font=40, text='Telefono').place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
+        self.parent_phone_entry = Entry(self.frame6_add_student, font=20).place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
+        self.parent_email_label = Label(self.frame7_add_student, font=40, text='E-mail').place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
+        self.parent_email_entry = Entry(self.frame7_add_student, font=20).place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
+        self.father_name_label = Label(self.frame8_add_student, font=40, text='Nombre Padre').place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
+        self.father_name_entry = Entry(self.frame8_add_student, font=20).place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
+        self.mother_name_label = Label(self.frame9_add_student, font=40, text='Nombre Madre').place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
+        self.mother_name_entry = Entry(self.frame9_add_student, font=20).place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
+        self.inscription_date_label = Label(self.frame10_add_student, font=40, text='Fecha de Inscripcion').place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
+        self.inscription_date_entry = Entry(self.frame10_add_student, font=20).place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
+        self.payment_day_label = Label(self.frame11_add_student, font=40, text='Dia de Pago').place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
+        self.payment_day_entry = Entry(self.frame11_add_student, font=20).place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
+        self.amount_paid_label = Label(self.frame12_add_student, font=40, text='Cantidad Pagada').place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
+        self.amount_paid_entry = Entry(self.frame12_add_student, font=20).place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
+        self.hours_of_access_label = Label(self.frame13_add_student, font=40, text='Accesso a horas').place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
+        self.hours_of_access_entry = Entry(self.frame13_add_student).place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
+        self.register_user_information = Button(self.frame_14_add_student, text='Registrar/Actualizar Informacion', font=40, command=self.register_user).place(relheight=.8, relwidth=.9, rely=.1, relx=.05)
+
+    def register_user(self):
+        pass
 
     def remove_student(self):
         self.remove_everything()
