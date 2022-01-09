@@ -37,22 +37,26 @@ class FrontEnd:
         self.width3_1 = .25
         self.width3_2 = .5
         self.width3_3 = .75
+        self.width4_1 = .2
+        self.width4_2 = .4
+        self.width4_3 = .6
+        self.width4_4 = .8
 
         # Colors
         self.WHITE = '#242B2E'
         self.ORANGE = "#CAD5E2"
         self.GREY = "#6C36AD"
         try:
-            self.complete_products_data = json.load(open('products_information', 'r'))
+            self.complete_products_data = json.load(open('products_information.txt', 'r'))
         except:
             self.complete_products_data = []
 
         try:
-            self.complete_students_data = json.load(open('Students', 'r'))
+            self.complete_students_data = json.load(open('Students.txt', 'r'))
         except:
             self.complete_students_data = []
         try:
-            self.complete_classes_data = json.load(open('Available_Classes', 'r'))
+            self.complete_classes_data = json.load(open('Available_Classes.txt', 'r'))
         except:
             self.complete_classes_data = []
 
@@ -156,7 +160,7 @@ class FrontEnd:
         # Remove 'Añadir Inverntario'
         try:
 
-            self.listbox_of_products.destroy()
+            self.listbox_of_products_id.destroy()
             self.add_inventory_entry.destroy()
             self.add_inventory_button.destroy()
             self.frame3_admin_page.destroy()
@@ -166,7 +170,7 @@ class FrontEnd:
             pass
         # Remove 'Quitar Producto'
         try:
-            self.listbox_of_products.destroy()
+            self.listbox_of_products_id.destroy()
             self.remove_product_button.destroy()
             self.frame3_admin_page.destroy()
             self.frame4_admin_page.destroy()
@@ -264,24 +268,24 @@ class FrontEnd:
         self.frame4_admin_page = Frame(root, bg=self.GREY)
         self.frame4_admin_page.place(relx=self.width2_2 - .15, rely=self.height2_2 - .05, relwidth=.3, relheight=.1)
         # Create Listbox and Button
-        self.listbox_of_products = Listbox(self.frame3_admin_page)
+        self.listbox_of_products_id = Listbox(self.frame3_admin_page)
         counter = 0
         for product_information in self.complete_products_data:
             counter += 1
-            self.listbox_of_products.insert(counter, product_information[0])
-        self.listbox_of_products.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
+            self.listbox_of_products_id.insert(counter, product_information[0])
+        self.listbox_of_products_id.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
         self.remove_product_button = Button(self.frame4_admin_page, text="Quitar Producto", command=self.remove_product, bg=self.ORANGE, fg=self.WHITE)
         self.remove_product_button.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
 
     def remove_product(self):
-        product = self.listbox_of_products.get(self.listbox_of_products.curselection())
+        product = self.listbox_of_products_id.get(self.listbox_of_products_id.curselection())
         try:
             for p in range(len(self.complete_products_data)):
                 if product == self.complete_products_data[p][0]:
                     self.complete_products_data.remove(self.complete_products_data[p])
         except IndexError:
             pass
-        json.dump(self.complete_products_data, open('products_information', 'w'))
+        json.dump(self.complete_products_data, open('products_information.txt', 'w'))
         self.remove_product_form()
 
     def inventory_list(self):
@@ -290,34 +294,42 @@ class FrontEnd:
         # Frames
         self.frame1_admin_page.place_forget()
         self.frame2_admin_page.place_forget()
-        self.frame1_admin_page.place(relx=self.width2_1 - .15, rely=self.height3_1 - 0.05, relwidth=0.3, relheight=.1)
-        self.frame2_admin_page.place(relx=self.width2_2 - .15, rely=self.height3_1 - 0.05, relwidth=0.3, relheight=.1)
+        self.frame1_admin_page.place(relx=self.width2_1 - .15, rely=self.height3_1 - .05, relwidth=.3, relheight=.1)
+        self.frame2_admin_page.place(relx=self.width2_2 - .15, rely=self.height3_1 - .05, relwidth=.3, relheight=.1)
         self.frame3_admin_page = Frame(root, bg=self.GREY)
-        self.frame3_admin_page.place(relx=self.width3_1 - .1, rely=self.height3_2 - 0.05, relwidth=0.2, relheight=.1)
+        self.frame3_admin_page.place(relx=self.width4_1 - .175, rely=self.height3_2 - .05, relwidth=.2, relheight=.1)
         self.frame4_admin_page = Frame(root, bg=self.GREY)
-        self.frame4_admin_page.place(relx=self.width3_2 - 0.1, rely=self.height3_2 - 0.05, relwidth=0.2, relheight=.1)
+        self.frame4_admin_page.place(relx=self.width4_2 - .125, rely=self.height3_2 - .05, relwidth=.2, relheight=.1)
         self.frame5_admin_page = Frame(root, bg=self.GREY)
-        self.frame5_admin_page.place(relx=self.width3_3 - 0.1, rely=self.height3_2 - 0.05, relwidth=0.2, relheight=.1)
+        self.frame5_admin_page.place(relx=self.width4_3 - .075, rely=self.height3_2 - .05, relwidth=.2, relheight=.1)
+        self.frame6_admin_page = Frame(root, bg=self.GREY)
+        self.frame6_admin_page.place(relx=self.width4_4 - .025, rely=self.height3_2 - .05, relwidth=.2, relheight=.1)
         # Listbox of products and button
-        self.listbox_of_products = Listbox(self.frame3_admin_page)
+        self.listbox_of_products_id = Listbox(self.frame3_admin_page)
+        self.listbox_of_products = Listbox(self.frame4_admin_page)
         counter = 0
         for product_information in self.complete_products_data:
             counter += 1
-            self.listbox_of_products.insert(counter, product_information[0])
-        self.listbox_of_products.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
-        self.add_inventory_entry = Entry(self.frame4_admin_page, justify='center')
+            self.listbox_of_products.insert(counter, product_information[1])
+            self.listbox_of_products_id.insert(counter, product_information[0])
+        self.listbox_of_products.place(relx=.05, rely=.1, relwidth=.9, relheight=.8)
+        self.listbox_of_products_id.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
+        self.add_inventory_entry = Entry(self.frame5_admin_page, justify='center')
         self.add_inventory_entry.place(relx=0.05, rely=.05, relwidth=0.9, relheight=0.4)
-        self.add_inventory_label = Label(self.frame4_admin_page, text='Cantidad', fg=self.WHITE)
+        self.add_inventory_label = Label(self.frame5_admin_page, text='Cantidad', fg=self.WHITE)
         self.add_inventory_label.place(relx=.05, rely=.5, relwidth=0.9, relheight=0.4)
-        self.add_inventory_button = Button(self.frame5_admin_page, text="Registrar Inventario", command=self.register_inventory, bg=self.ORANGE, fg=self.WHITE)
+        self.add_inventory_button = Button(self.frame6_admin_page, text="Registrar Inventario", command=self.register_inventory, bg=self.ORANGE, fg=self.WHITE)
         self.add_inventory_button.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
 
     def register_inventory(self):
-        product = self.listbox_of_products.get(self.listbox_of_products.curselection())
+        try:
+            product = self.listbox_of_products.get(self.listbox_of_products.curselection())
+        except:
+            product = self.listbox_of_products_id.get(self.listbox_of_products_id.curselection())
         for i in range(0, len(self.complete_products_data)):
             if product in self.complete_products_data[i]:
-                self.complete_products_data[i][2] += int(self.add_inventory_entry.get())
-                json.dump(self.complete_products_data, open('products_information', 'w'))
+                self.complete_products_data[i][4] += int(self.add_inventory_entry.get())
+                json.dump(self.complete_products_data, open('products_information.txt', 'w'))
 
     def add_product_to_sell(self):
         self.remove_everything()
@@ -374,7 +386,7 @@ class FrontEnd:
         temp_data = [self.item_id_entry.get(), self.item_to_sell_entry.get(), self.item_provider_entry.get(), int(self.price_entry.get()), int(self.current_inventory_entry.get()), int(self.cost_entry.get())]
         if temp_data not in self.complete_products_data:
             self.complete_products_data.append(temp_data)
-            json.dump(self.complete_products_data, open('products_information', 'w'))
+            json.dump(self.complete_products_data, open('products_information.txt', 'w'))
 
     def add_class_to_sell(self):
         self.remove_everything()
@@ -419,7 +431,7 @@ class FrontEnd:
 
     def add_activity_to_sell(self):
         self.complete_classes_data.append([self.add_activity_entry.get(), self.add_levels_entry.get()])
-        json.dump(self.complete_classes_data, open('Available_Classes', 'w'))
+        json.dump(self.complete_classes_data, open('Available_Classes.txt', 'w'))
 
     def check_activity(self):
         self.remove_everything()
@@ -489,7 +501,7 @@ class FrontEnd:
                     if self.complete_classes_data[i][0] == activity:
                         self.complete_classes_data[i].append([day_of_week, f'{start_hour}:{"00" if start_minute == 0 else start_minute}-{start_hour+1}:{"00" if end_minute == 0 else end_minute}', self.teacher_entry.get(), int(self.available_seats_entry.get())])
                         start_hour += 1
-        json.dump(self.complete_classes_data, open('Available_Classes', 'w'))
+        json.dump(self.complete_classes_data, open('Available_Classes.txt', 'w'))
 
     def sell_mode(self):
         try:
@@ -798,7 +810,7 @@ class FrontEnd:
                     self.complete_students_data.pop(counter)
                 counter += 1
             self.complete_students_data.append([user_id, user_name, birthday, parent_address, parent_telephone, parent_email, father_name, mother_name, inscription_date, payment_date, amount_paid, amount_of_hours, security_link])
-            json.dump(self.complete_students_data, open('Students', 'w'))
+            json.dump(self.complete_students_data, open('Students.txt', 'w'))
             # Create Frame for main grid
             self.frame16_add_student = Frame(root, bg='#9fb5b7')
             self.frame16_add_student.place(rely=.35, relx=.1, relheight=.6, relwidth=.8)
