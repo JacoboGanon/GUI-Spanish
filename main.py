@@ -564,10 +564,11 @@ class FrontEnd:
                 # Create plus and minus buttons below
                 # Make plus and minus buttons get combobox text and add label
             # If not category
-            Label(i, text=self.complete_products_data[counter2][0], fg=self.WHITE).place(relx=0.1, rely=.05, relwidth=.8, relheight=.45)
-            Button(i, text='+', font=15, bg=self.ORANGE, command=lambda m=self.complete_products_data[counter2][0]: self.add_product_label(m)).place(relx=0.25, rely=.55, relwidth=.2, relheight=.4)
-            Button(i, text='-', font=15, bg=self.ORANGE, command=lambda m=self.complete_products_data[counter2][0]: self.remove_product_label(m)).place(relx=.55, rely=.55, relwidth=.2, relheight=.4)
+            Label(i, text=self.complete_products_data[counter2][1], fg=self.WHITE).place(relx=0.1, rely=.05, relwidth=.8, relheight=.45)
+            Button(i, text='+', font=15, bg=self.ORANGE, command=lambda m=self.complete_products_data[counter2][1]: self.add_product_label(m)).place(relx=0.25, rely=.55, relwidth=.2, relheight=.4)
+            Button(i, text='-', font=15, bg=self.ORANGE, command=lambda m=self.complete_products_data[counter2][1]: self.remove_product_label(m)).place(relx=.55, rely=.55, relwidth=.2, relheight=.4)
             counter2 += 1
+
     def clear_sell(self):
         # Remove 'Productos' In sell mode
         for i in root.winfo_children():
@@ -594,10 +595,9 @@ class FrontEnd:
 
         for i in self.list_of_labels:
             for p in self.complete_products_data:
-                if p[0] == i[0]:
-                    price = p[1] * i[1]
-            Label(self.register_products_frame, text=f'Producto: {i[0]}, Cantidad: {i[1]}, Precio: {price}').grid(
-                row=row, column=0)
+                if p[1] == i[0]:
+                    price = p[3] * i[1]
+            Label(self.register_products_frame, text=f'Producto: {i[0]}, Cantidad: {i[1]}, Precio: {price}', font=('Times', 14)).grid(row=row, column=0)
             self.total_price += price
             row += 1
         if self.total_price != 0:
@@ -615,24 +615,24 @@ class FrontEnd:
                 i.destroy()
         for i in self.list_of_labels:
             for p in self.complete_products_data:
-                if p[0] == i[0] and p[2] > i[1]:
+                if p[1] == i[0] and p[4] > i[1]:
                     if i[0] == product:
                         i[1] += 1
                         counter += 1
-                elif p[0] == i[0] and p[2] == i[1] and i[0] == product:
+                elif p[1] == i[0] and p[4] == i[1] and i[0] == product:
                     counter += 1
                     messagebox.showinfo('Inventario', 'Se acabo este producto.')
         if counter == 0:
             for p in self.complete_products_data:
-                if p[0] == product and p[2] == 0:
+                if p[1] == product and p[4] == 0:
                     messagebox.showinfo('Inventario', 'Se acabo este producto.')
-                elif p[0] == product and p[2] != 0:
+                elif p[1] == product and p[4] != 0:
                     self.list_of_labels.append([product, 1])
         for i in self.list_of_labels:
             for p in self.complete_products_data:
-                if p[0] == i[0]:
-                    price = p[1] * i[1]
-            Label(self.register_products_frame, text=f'Producto: {i[0]}, Cantidad: {i[1]}, Precio: {price}').grid(row=row, column=0)
+                if p[1] == i[0]:
+                    price = p[3] * i[1]
+            Label(self.register_products_frame, text=f'Producto: {i[0]}, Cantidad: {i[1]}, Precio: {price}', font=('Times', 14)).grid(row=row, column=0)
             self.total_price += price
             row += 1
         Label(self.register_products_frame, text=f'Total: {self.total_price}').grid(row=row+1, column=0)
