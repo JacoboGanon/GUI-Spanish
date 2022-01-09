@@ -886,7 +886,7 @@ class FrontEnd:
         self.time_schedule_entry.delete(0, END)
         self.time_schedule_entry.config(fg='black')
 
-
-front = FrontEnd()
-front.sell_mode()
-root.mainloop()
+if __name__ == '__main__':
+    front = FrontEnd()
+    front.sell_mode()
+    root.mainloop()
