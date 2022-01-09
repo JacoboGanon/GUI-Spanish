@@ -272,6 +272,7 @@ class FrontEnd:
                     self.complete_products_data.remove(self.complete_products_data[p])
         except IndexError:
             pass
+        json.dump(self.complete_products_data, open('products_information', 'w'))
         self.remove_product_form()
 
     def inventory_list(self):
@@ -307,6 +308,7 @@ class FrontEnd:
         for i in range(0, len(self.complete_products_data)):
             if product in self.complete_products_data[i]:
                 self.complete_products_data[i][2] += int(self.add_inventory_entry.get())
+                json.dump(self.complete_products_data, open('products_information', 'w'))
 
     def add_product_to_sell(self):
         self.remove_everything()
@@ -352,6 +354,7 @@ class FrontEnd:
             pass
         else:
             self.complete_products_data.append(temp_data)
+            json.dump(self.complete_products_data, open('products_information', 'w'))
 
     def add_class_to_sell(self):
         self.remove_everything()
@@ -386,6 +389,7 @@ class FrontEnd:
 
     def add_activity_to_sell(self):
         self.complete_classes_data.append([self.add_activity_entry.get()])
+        json.dump(self.complete_classes_data, open('Available_Classes', 'w'))
 
     def check_activity(self):
         self.remove_everything()
@@ -455,6 +459,7 @@ class FrontEnd:
                     if self.complete_classes_data[i][0] == activity:
                         self.complete_classes_data[i].append([day_of_week, f'{start_hour}:{"00" if start_minute == 0 else start_minute}-{start_hour+1}:{"00" if end_minute == 0 else end_minute}', self.teacher_entry.get(), int(self.available_seats_entry.get())])
                         start_hour += 1
+        json.dump(self.complete_classes_data, open('Available_Classes', 'w'))
 
     def sell_mode(self):
         try:
@@ -881,13 +886,7 @@ class FrontEnd:
         self.time_schedule_entry.delete(0, END)
         self.time_schedule_entry.config(fg='black')
 
-    # Write information down when closing program
-    def register(self):
-        json.dump(self.complete_products_data, open('products_information', 'w'))
-        json.dump(self.complete_classes_data, open('Available_Classes', 'w'))
-
 
 front = FrontEnd()
 front.sell_mode()
 root.mainloop()
-front.register()
