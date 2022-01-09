@@ -704,8 +704,11 @@ class FrontEnd:
     def register_user(self):
         # Check if required entries are registered
         if self.user_birthday_entry.get() == '':
-            # Check ID Entry and Full Name Entry for existing users and type it out
-            self.check_records(self.user_id_entry.get(), self.user_name_entry.get())
+            # Check ID Entry and Full Name Entry for existing users
+            if self.check_records(self.user_id_entry.get(), self.user_name_entry.get()) != 1:
+                # Create Label to present user with 'Fill in Required fields'
+                Label(root, text='Llena los campos con *', font=20).place(relheight=.1, relwidth=.2, relx=.4, rely=.45)
+
         # Check if all required fields are filled
         elif self.user_birthday_entry.get() != '':
             user_id = self.user_id_entry.get()
@@ -748,9 +751,10 @@ class FrontEnd:
                     self.complete_students_data.pop(i)
             self.complete_students_data.append([user_id, user_name, birthday, parent_address, parent_telephone, parent_email, father_name, mother_name, inscription_date, payment_date, amount_paid, amount_of_hours])
             json.dump(self.complete_students_data, open('Students', 'w'))
-        else:
-            # Create Label to present user with 'Fill in Required fields'
-            pass
+            # Remove everything and create main grid
+            for i in root.winfo_children():
+                if i == root.winfo_children()[0]:
+                    i.destroy()
 
     def check_records(self, user_id, user_name):
         # Check if there is an ID and name
