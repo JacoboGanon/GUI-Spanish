@@ -1,5 +1,5 @@
 # Imports
-from tkinter import Tk, Label, Frame, Entry, Button, PhotoImage, Listbox, messagebox, END
+from tkinter import Tk, Label, Frame, Entry, Button, font, Listbox, messagebox, END
 from tkinter.ttk import Combobox
 import os
 import json
@@ -11,6 +11,13 @@ root.geometry('%dx%d' % (root.winfo_screenwidth(), root.winfo_screenheight()))
 # Main Loop
 class FrontEnd:
     def __init__(self):
+        # Set default font
+        self.defaultFont = font.nametofont("TkDefaultFont")
+
+        # Overriding default-font with custom settings
+        # i.e changing font-family, size and weight
+        self.defaultFont.configure(family="Times",
+                                   size=16)
         # Heights (Format = self.height, number of columns, number in column)
         self.total_price = 0
         self.height1_1 = 0.5
@@ -95,13 +102,6 @@ class FrontEnd:
             self.frame4_admin_page.destroy()
         except AttributeError:
             pass
-        # Remove 'Productos' In sell mode
-        try:
-            for i in root.winfo_children():
-                i.destroy()
-
-        except AttributeError:
-            pass
         # Remove Sell
         try:
             self.class_button.destroy()
@@ -179,14 +179,14 @@ class FrontEnd:
         self.frame1_sell.place(relx=self.width2_1 - .15, rely=self.height1_1 - .04, relwidth=.3, relheight=.08)
         self.frame2_sell = Frame(root, bg=self.GREY)
         self.frame2_sell.place(relx=self.width2_2 - .15, rely=self.height1_1 - .04, relwidth=.3, relheight=.08)
-        self.admin_mode = Button(self.frame1_sell, font="bold", text="Administrar", command=self.admin_ask_password, bg=self.ORANGE, fg=self.WHITE)
+        self.admin_mode = Button(self.frame1_sell, text="Administrar", command=self.admin_ask_password, bg=self.ORANGE, fg=self.WHITE)
         self.admin_mode.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
-        self.seller_mode = Button(self.frame2_sell, font="bold", text="Vender", command=self.sell_mode, bg=self.ORANGE, fg=self.WHITE)
+        self.seller_mode = Button(self.frame2_sell, text="Vender", command=self.sell_mode, bg=self.ORANGE, fg=self.WHITE)
         self.seller_mode.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
 
     def admin_ask_password(self):
         self.remove_everything()
-        self.return_button = Button(root, font="bold", text="Regresar", command=self.main_page, bg=self.ORANGE, fg=self.WHITE)
+        self.return_button = Button(root, text="Regresar", command=self.main_page, bg=self.ORANGE, fg=self.WHITE)
         self.return_button.place(relwidth=0.13, relheight=0.06)
         # Create frames
         self.frame1_admin_password = Frame(root, bg=self.GREY)
@@ -194,9 +194,9 @@ class FrontEnd:
         self.frame2_admin_password = Frame(root, bg=self.GREY)
         self.frame2_admin_password.place(relx=self.width2_2 - .15, rely=self.height1_1 - .03, relwidth=.3, relheight=.06)
         # Create password entry and button
-        self.password_entry = Entry(self.frame1_admin_password, show='*', font=20)
+        self.password_entry = Entry(self.frame1_admin_password, show='*')
         self.password_entry.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
-        self.password_button = Button(self.frame2_admin_password, font="bold", text="Registrar Contraseña", command=self.get_password, bg=self.ORANGE, fg=self.WHITE)
+        self.password_button = Button(self.frame2_admin_password, text="Registrar Contraseña", command=self.get_password, bg=self.ORANGE, fg=self.WHITE)
         self.password_button.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
 
     def get_password(self):
@@ -214,7 +214,7 @@ class FrontEnd:
         self.frame2_admin_page = Frame(root, bg=self.GREY)
         self.frame2_admin_page.place(relx=self.width2_2 - .15, rely=self.height1_1 - .05, relwidth=.3, relheight=.1)
         # Create Listbox
-        self.choose_to_add = Listbox(self.frame1_admin_page, height=4, font=10)
+        self.choose_to_add = Listbox(self.frame1_admin_page, height=4)
         self.choose_to_add.insert(1, 'Añadir Clase')
         self.choose_to_add.insert(2, 'Añadir Producto')
         self.choose_to_add.insert(3, 'Añadir Inventario')
@@ -223,7 +223,7 @@ class FrontEnd:
         self.choose_to_add.insert(6, 'Añadir Producto a Categoria')
         self.choose_to_add.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
         # Create button to get listbox information
-        self.listbox_button = Button(self.frame2_admin_page, font="bold", text="Seleccionar", command=self.gateway_to_decision, bg=self.ORANGE, fg=self.WHITE)
+        self.listbox_button = Button(self.frame2_admin_page, text="Seleccionar", command=self.gateway_to_decision, bg=self.ORANGE, fg=self.WHITE)
         self.listbox_button.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
 
     def gateway_to_decision(self):
@@ -255,13 +255,13 @@ class FrontEnd:
         self.frame4_admin_page = Frame(root, bg=self.GREY)
         self.frame4_admin_page.place(relx=self.width2_2 - .15, rely=self.height2_2 - .05, relwidth=.3, relheight=.1)
         # Create Listbox and Button
-        self.listbox_of_products = Listbox(self.frame3_admin_page, font=10)
+        self.listbox_of_products = Listbox(self.frame3_admin_page)
         counter = 0
         for product_information in self.complete_products_data:
             counter += 1
             self.listbox_of_products.insert(counter, product_information[0])
         self.listbox_of_products.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
-        self.remove_product_button = Button(self.frame4_admin_page, font="bold", text="Quitar Producto", command=self.remove_product, bg=self.ORANGE, fg=self.WHITE)
+        self.remove_product_button = Button(self.frame4_admin_page, text="Quitar Producto", command=self.remove_product, bg=self.ORANGE, fg=self.WHITE)
         self.remove_product_button.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
 
     def remove_product(self):
@@ -289,17 +289,17 @@ class FrontEnd:
         self.frame5_admin_page = Frame(root, bg=self.GREY)
         self.frame5_admin_page.place(relx=self.width3_3 - 0.1, rely=self.height3_2 - 0.05, relwidth=0.2, relheight=.1)
         # Listbox of products and button
-        self.listbox_of_products = Listbox(self.frame3_admin_page, font=10)
+        self.listbox_of_products = Listbox(self.frame3_admin_page)
         counter = 0
         for product_information in self.complete_products_data:
             counter += 1
             self.listbox_of_products.insert(counter, product_information[0])
         self.listbox_of_products.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
-        self.add_inventory_entry = Entry(self.frame4_admin_page, font=20, justify='center')
+        self.add_inventory_entry = Entry(self.frame4_admin_page, justify='center')
         self.add_inventory_entry.place(relx=0.05, rely=.05, relwidth=0.9, relheight=0.4)
-        self.add_inventory_label = Label(self.frame4_admin_page, text='Cantidad', fg=self.WHITE, font='bold')
+        self.add_inventory_label = Label(self.frame4_admin_page, text='Cantidad', fg=self.WHITE)
         self.add_inventory_label.place(relx=.05, rely=.5, relwidth=0.9, relheight=0.4)
-        self.add_inventory_button = Button(self.frame5_admin_page, font="bold", text="Registrar Inventario", command=self.register_inventory, bg=self.ORANGE, fg=self.WHITE)
+        self.add_inventory_button = Button(self.frame5_admin_page, text="Registrar Inventario", command=self.register_inventory, bg=self.ORANGE, fg=self.WHITE)
         self.add_inventory_button.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
 
     def register_inventory(self):
@@ -326,24 +326,24 @@ class FrontEnd:
         self.frame7_admin_page = Frame(root, bg=self.GREY)
         self.frame7_admin_page.place(relx=self.width3_2 - 0.15, rely=self.height4_4 - 0.03, relwidth=0.3, relheight=.06)
         # Information Widgets
-        self.item_to_sell_label = Label(self.frame3_admin_page, bg=self.GREY, fg=self.WHITE, text="Nombre de Producto", font=13)
+        self.item_to_sell_label = Label(self.frame3_admin_page, bg=self.GREY, fg=self.WHITE, text="Nombre de Producto")
         self.item_to_sell_label.place(relx=0.15, rely=0.5, relwidth=0.7, relheight=0.3)
-        self.item_to_sell_entry = Entry(self.frame3_admin_page, font=20)
+        self.item_to_sell_entry = Entry(self.frame3_admin_page)
         self.item_to_sell_entry.place(relx=0.15, rely=0.08, relwidth=0.7, relheight=0.3)
-        self.price_label = Label(self.frame4_admin_page, bg=self.GREY, fg=self.WHITE, text="Precio de Producto", font=13)
+        self.price_label = Label(self.frame4_admin_page, bg=self.GREY, fg=self.WHITE, text="Precio de Producto")
         self.price_label.place(relx=0.15, rely=0.5, relwidth=0.7, relheight=0.3)
-        self.price_entry = Entry(self.frame4_admin_page, font=20)
+        self.price_entry = Entry(self.frame4_admin_page)
         self.price_entry.place(relx=0.15, rely=0.08, relwidth=0.7, relheight=0.3)
-        self.current_inventory_label = Label(self.frame5_admin_page, bg=self.GREY, fg=self.WHITE, text="Cantidad en Inventario", font=13)
+        self.current_inventory_label = Label(self.frame5_admin_page, bg=self.GREY, fg=self.WHITE, text="Cantidad en Inventario")
         self.current_inventory_label.place(relx=0.15, rely=0.5, relwidth=0.7, relheight=0.3)
-        self.current_inventory_entry = Entry(self.frame5_admin_page, font=20)
+        self.current_inventory_entry = Entry(self.frame5_admin_page)
         self.current_inventory_entry.place(relx=0.15, rely=0.08, relwidth=0.7, relheight=0.3)
-        self.cost_entry = Entry(self.frame6_admin_page, font=20)
+        self.cost_entry = Entry(self.frame6_admin_page)
         self.cost_entry.place(relx=0.15, rely=0.08, relwidth=0.7, relheight=0.3)
-        self.cost_label = Label(self.frame6_admin_page, bg=self.GREY, fg=self.WHITE, text='Costo de Producto', font=13)
+        self.cost_label = Label(self.frame6_admin_page, bg=self.GREY, fg=self.WHITE, text='Costo de Producto')
         self.cost_label.place(relx=0.15, rely=0.5, relwidth=0.7, relheight=0.3)
         # Register Widget
-        self.register_button = Button(self.frame7_admin_page, font="bold", text="Registrar Producto", bg=self.ORANGE, fg=self.WHITE, command=self.update_products_information)
+        self.register_button = Button(self.frame7_admin_page, text="Registrar Producto", bg=self.ORANGE, fg=self.WHITE, command=self.update_products_information)
         self.register_button.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
 
     def update_products_information(self):
@@ -365,10 +365,10 @@ class FrontEnd:
         self.frame4_admin_page = Frame(root, bg=self.GREY)
         self.frame4_admin_page.place(relx=self.width2_2-.15, rely=self.height4_2-.04, relheight=.08, relwidth=.3)
         # Añadir Actividad
-        self.activity_button = Button(self.frame3_admin_page, font="bold", text="Añadir Actividad", bg=self.ORANGE, fg=self.WHITE, command=self.add_activity)
+        self.activity_button = Button(self.frame3_admin_page, text="Añadir Actividad", bg=self.ORANGE, fg=self.WHITE, command=self.add_activity)
         self.activity_button.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
         # Añadir Horario, Dia, Maestro
-        self.add_class_button = Button(self.frame4_admin_page, font='bold', text='Añadir Clase', bg=self.ORANGE, fg=self.WHITE, command=self.check_activity)
+        self.add_class_button = Button(self.frame4_admin_page, text='Añadir Clase', bg=self.ORANGE, fg=self.WHITE, command=self.check_activity)
         self.add_class_button.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
 
     def add_activity(self):
@@ -379,9 +379,9 @@ class FrontEnd:
         self.frame2_activity_page = Frame(root, bg=self.GREY)
         self.frame2_activity_page.place(relx=self.width2_2-.15, rely=self.height4_2-.04, relwidth=.3, relheight=.08)
         # Add Activity Entry and Button
-        self.add_activity_entry = Entry(self.frame1_activity_page, font=20)
+        self.add_activity_entry = Entry(self.frame1_activity_page)
         self.add_activity_entry.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
-        self.add_activity_button = Button(self.frame2_activity_page, font='bold', bg=self.ORANGE, fg=self.WHITE, text='Añadir Actividad', command=self.add_activity_to_sell)
+        self.add_activity_button = Button(self.frame2_activity_page, bg=self.ORANGE, fg=self.WHITE, text='Añadir Actividad', command=self.add_activity_to_sell)
         self.add_activity_button.place(relx=0.05, rely=.1, relwidth=.9, relheight=.8)
 
     def add_activity_to_sell(self):
@@ -403,26 +403,26 @@ class FrontEnd:
         self.frame6_class_page = Frame(root, bg=self.GREY)
         self.frame6_class_page.place(relx=self.width2_2-.15, rely=self.height4_4 - .04, relwidth=.3, relheight=.08)
         # Create Listbox, Entries, Labels, and Button
-        self.list_of_activities = Combobox(self.frame1_class_page, font=20)
+        self.list_of_activities = Combobox(self.frame1_class_page)
         self.list_of_activities.place(relx=.05, rely=.1, relwidth=.9, relheight=.8)
         counter = 0
-        self.day_of_week = Listbox(self.frame2_class_page, height=4, font=14)
+        self.day_of_week = Listbox(self.frame2_class_page, height=4)
         self.day_of_week.place(relx=.05, rely=.1, relwidth=.9, relheight=.8)
-        self.time_schedule_entry = Entry(self.frame3_class_page, font=20, fg='grey')
+        self.time_schedule_entry = Entry(self.frame3_class_page, fg='grey')
         self.time_schedule_entry.place(relx=.05, rely=.05, relwidth=.9, relheight=.4)
         self.time_schedule_entry.insert(0, 'Ejemplo (12:00-14:00)')
         self.time_schedule_entry.bind('<FocusIn>', self.focus_in)
-        self.time_schedule_label = Label(self.frame3_class_page, font='bold', bg=self.GREY, fg=self.WHITE, text='Horario')
+        self.time_schedule_label = Label(self.frame3_class_page, bg=self.GREY, fg=self.WHITE, text='Horario')
         self.time_schedule_label.place(relx=.05, rely=.5, relwidth=.9, relheight=.4)
-        self.list_of_activities_button = Button(self.frame6_class_page, font='bold', bg=self.ORANGE, fg=self.WHITE, text='Registrar Clase', command=self.add_class)
+        self.list_of_activities_button = Button(self.frame6_class_page, bg=self.ORANGE, fg=self.WHITE, text='Registrar Clase', command=self.add_class)
         self.list_of_activities_button.place(relx=.05, rely=.1, relwidth=.9, relheight=.8)
-        self.teacher_entry = Entry(self.frame4_class_page, font=20)
+        self.teacher_entry = Entry(self.frame4_class_page)
         self.teacher_entry.place(relx=.05, rely=.05, relwidth=.9, relheight=.4)
-        self.teacher_label = Label(self.frame4_class_page, font='bold', bg=self.GREY, fg=self.WHITE, text='Maestro')
+        self.teacher_label = Label(self.frame4_class_page, bg=self.GREY, fg=self.WHITE, text='Maestro')
         self.teacher_label.place(relx=.05, rely=.5, relwidth=.9, relheight=.4)
-        self.available_seats_entry = Entry(self.frame5_class_page, font=20)
+        self.available_seats_entry = Entry(self.frame5_class_page)
         self.available_seats_entry.place(relx=.05, rely=.05, relwidth=.9, relheight=.4)
-        self.available_seats_label = Label(self.frame5_class_page, font='bold', bg=self.GREY, fg=self.WHITE, text='Lugares Disponibles')
+        self.available_seats_label = Label(self.frame5_class_page, bg=self.GREY, fg=self.WHITE, text='Lugares Disponibles')
         self.available_seats_label.place(relx=.05, rely=.5, relwidth=.9, relheight=.4)
         # Add days of week
         self.day_of_week.insert(0, 'Lunes')
@@ -474,11 +474,11 @@ class FrontEnd:
         self.frame2_seller = Frame(root, bg=self.GREY)
         self.frame2_seller.place(relx=self.width2_2 - 0.15, rely=self.height1_1 - 0.04, relwidth=0.3, relheight=.08)
         # Main Widgets
-        self.return_button = Button(root, font="bold", text="Regresar", command=self.main_page, bg=self.ORANGE, fg=self.WHITE)
+        self.return_button = Button(root, text="Regresar", command=self.main_page, bg=self.ORANGE, fg=self.WHITE)
         self.return_button.place(relwidth=0.13, relheight=0.06)
-        self.class_button = Button(self.frame1_seller, font="bold", text="Clases", command=self.classes, bg=self.ORANGE, fg=self.WHITE)
+        self.class_button = Button(self.frame1_seller, text="Clases", command=self.classes, bg=self.ORANGE, fg=self.WHITE)
         self.class_button.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
-        self.product_button = Button(self.frame2_seller, font="bold", text="Productos", command=self.products, bg=self.ORANGE, fg=self.WHITE)
+        self.product_button = Button(self.frame2_seller, text="Productos", command=self.products, bg=self.ORANGE, fg=self.WHITE)
         self.product_button.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
 
     def products(self):
@@ -493,11 +493,11 @@ class FrontEnd:
         self.buttons_frame = Frame(root)
         self.buttons_frame.place(relx=0, rely=0, relwidth=.2, relheight=0.06)
         # Create return button
-        self.return_button = Button(self.buttons_frame, font="bold", text="Regresar", command=self.main_page, bg=self.ORANGE, fg=self.WHITE)
+        self.return_button = Button(self.buttons_frame, text="Regresar", command=self.clear_sell, bg=self.ORANGE, fg=self.WHITE)
         self.return_button.grid(row=0, column=0, padx=5, pady=5)
-        self.charge_button = Button(self.buttons_frame, font="bold", text="Cobrar", command=self.charge, bg=self.ORANGE, fg=self.WHITE)
+        self.charge_button = Button(self.buttons_frame, text="Cobrar", command=self.charge, bg=self.ORANGE, fg=self.WHITE)
         self.charge_button.grid(row=0, column=1, padx=5, pady=5)
-        self.clear_button = Button(self.buttons_frame, font="bold", text="Vaciar", command=self.clear, bg=self.ORANGE, fg=self.WHITE)
+        self.clear_button = Button(self.buttons_frame, text="Vaciar", command=self.clear, bg=self.ORANGE, fg=self.WHITE)
         self.clear_button.grid(row=0, column=2, padx=5, pady=5)
         # Row and column
         counter = 0
@@ -517,10 +517,15 @@ class FrontEnd:
                 # Create plus and minus buttons below
                 # Make plus and minus buttons get combobox text and add label
             # If not category
-            Label(i, font='bold', text=self.complete_products_data[counter2][0], fg=self.WHITE).place(relx=0.1, rely=.05, relwidth=.8, relheight=.45)
+            Label(i, text=self.complete_products_data[counter2][0], fg=self.WHITE).place(relx=0.1, rely=.05, relwidth=.8, relheight=.45)
             Button(i, text='+', font=15, bg=self.ORANGE, command=lambda m=self.complete_products_data[counter2][0]: self.add_product_label(m)).place(relx=0.25, rely=.55, relwidth=.2, relheight=.4)
             Button(i, text='-', font=15, bg=self.ORANGE, command=lambda m=self.complete_products_data[counter2][0]: self.remove_product_label(m)).place(relx=.55, rely=.55, relwidth=.2, relheight=.4)
             counter2 += 1
+    def clear_sell(self):
+        # Remove 'Productos' In sell mode
+        for i in root.winfo_children():
+            i.destroy()
+        self.main_page()
 
     def remove_product_label(self, product):
         row = 1
@@ -549,7 +554,7 @@ class FrontEnd:
             self.total_price += price
             row += 1
         if self.total_price != 0:
-            Label(self.register_products_frame, text=f'Total: {self.total_price}', font='bold').grid(row=row + 1, column=0)
+            Label(self.register_products_frame, text=f'Total: {self.total_price}').grid(row=row + 1, column=0)
 
     def add_product_label(self, product):
         counter = 0
@@ -583,7 +588,7 @@ class FrontEnd:
             Label(self.register_products_frame, text=f'Producto: {i[0]}, Cantidad: {i[1]}, Precio: {price}').grid(row=row, column=0)
             self.total_price += price
             row += 1
-        Label(self.register_products_frame, text=f'Total: {self.total_price}', font='bold').grid(row=row+1, column=0)
+        Label(self.register_products_frame, text=f'Total: {self.total_price}').grid(row=row+1, column=0)
 
     def charge(self):
         for i in self.list_of_labels:
@@ -608,9 +613,9 @@ class FrontEnd:
         self.class_frame2 = Frame(root, bg=self.GREY)
         self.class_frame2.place(relx=self.width2_2-.15, rely=self.height1_1-.04, relwidth=.3, relheight=.08)
         # Create Add and Remove Student buttons
-        self.add_student_button = Button(self.class_frame1, font="bold", text="Añadir Estudiante", command=self.add_student, bg=self.ORANGE, fg=self.WHITE)
+        self.add_student_button = Button(self.class_frame1, text="Añadir Estudiante", command=self.add_student, bg=self.ORANGE, fg=self.WHITE)
         self.add_student_button.place(relx=.05, rely=.1, relwidth=.9, relheight=.8)
-        self.remove_student_button = Button(self.class_frame2, font='bold', text='Quitar Estudiante', command=self.remove_student, bg=self.ORANGE, fg=self.WHITE)
+        self.remove_student_button = Button(self.class_frame2, text='Quitar Estudiante', command=self.remove_student, bg=self.ORANGE, fg=self.WHITE)
         self.remove_student_button.place(relx=.05, rely=.1, relwidth=.9, relheight=.8)
 
     def add_student(self):
@@ -641,58 +646,58 @@ class FrontEnd:
                 counter = 0
                 row += 1
         # Place return button
-        self.return_button = Button(self.frame1_add_student, font=30, text="Regresar", command=self.remove_user_information_interface, bg=self.ORANGE, fg=self.WHITE)
+        self.return_button = Button(self.frame1_add_student, font=('Times', 15), text="Regresar", command=self.remove_user_information_interface, bg=self.ORANGE, fg=self.WHITE)
         self.return_button.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
         # Place User Questions
-        self.user_id_label = Label(self.frame2_add_student, font=40, text='ID (Buscar por Numero)')
+        self.user_id_label = Label(self.frame2_add_student, font=('Times', 15), text='ID (Buscar por Numero)')
         self.user_id_label.place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
-        self.user_id_entry = Entry(self.frame2_add_student, font=20)
+        self.user_id_entry = Entry(self.frame2_add_student)
         self.user_id_entry.place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
-        self.user_name_label = Label(self.frame3_add_student, font=40, text='Nombre Completo Alumno')
+        self.user_name_label = Label(self.frame3_add_student, font=('Times', 15), text='Nombre Completo Alumno')
         self.user_name_label.place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
-        self.user_name_entry = Entry(self.frame3_add_student, font=20)
+        self.user_name_entry = Entry(self.frame3_add_student)
         self.user_name_entry.place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
-        self.user_birthday_label = Label(self.frame4_add_student, font=40, text='Fecha de Nacimiento')
+        self.user_birthday_label = Label(self.frame4_add_student, font=('Times', 15), text='Fecha de Nacimiento')
         self.user_birthday_label.place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
-        self.user_birthday_entry = Entry(self.frame4_add_student, font=20)
+        self.user_birthday_entry = Entry(self.frame4_add_student)
         self.user_birthday_entry.place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
-        self.parent_address_label = Label(self.frame5_add_student, font=40, text='Direccion')
+        self.parent_address_label = Label(self.frame5_add_student, font=('Times', 15), text='Direccion')
         self.parent_address_label.place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
-        self.parent_address_entry = Entry(self.frame5_add_student, font=20)
+        self.parent_address_entry = Entry(self.frame5_add_student)
         self.parent_address_entry.place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
-        self.parent_phone_label = Label(self.frame6_add_student, font=40, text='Telefono')
+        self.parent_phone_label = Label(self.frame6_add_student, font=('Times', 15), text='Telefono')
         self.parent_phone_label.place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
-        self.parent_phone_entry = Entry(self.frame6_add_student, font=20)
+        self.parent_phone_entry = Entry(self.frame6_add_student)
         self.parent_phone_entry.place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
-        self.parent_email_label = Label(self.frame7_add_student, font=40, text='E-mail')
+        self.parent_email_label = Label(self.frame7_add_student, font=('Times', 15), text='E-mail')
         self.parent_email_label.place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
-        self.parent_email_entry = Entry(self.frame7_add_student, font=20)
+        self.parent_email_entry = Entry(self.frame7_add_student)
         self.parent_email_entry.place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
-        self.father_name_label = Label(self.frame8_add_student, font=40, text='Nombre Padre')
+        self.father_name_label = Label(self.frame8_add_student, font=('Times', 15), text='Nombre Padre')
         self.father_name_label.place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
-        self.father_name_entry = Entry(self.frame8_add_student, font=20)
+        self.father_name_entry = Entry(self.frame8_add_student)
         self.father_name_entry.place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
-        self.mother_name_label = Label(self.frame9_add_student, font=40, text='Nombre Madre')
+        self.mother_name_label = Label(self.frame9_add_student, font=('Times', 15), text='Nombre Madre')
         self.mother_name_label.place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
-        self.mother_name_entry = Entry(self.frame9_add_student, font=20)
+        self.mother_name_entry = Entry(self.frame9_add_student)
         self.mother_name_entry.place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
-        self.inscription_date_label = Label(self.frame10_add_student, font=40, text='Fecha de Inscripcion')
+        self.inscription_date_label = Label(self.frame10_add_student, font=('Times', 15), text='Fecha de Inscripcion')
         self.inscription_date_label.place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
-        self.inscription_date_entry = Entry(self.frame10_add_student, font=20)
+        self.inscription_date_entry = Entry(self.frame10_add_student)
         self.inscription_date_entry.place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
-        self.payment_day_label = Label(self.frame11_add_student, font=40, text='Dia de Pago')
+        self.payment_day_label = Label(self.frame11_add_student, font=('Times', 15), text='Dia de Pago')
         self.payment_day_label.place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
-        self.payment_day_entry = Entry(self.frame11_add_student, font=20)
+        self.payment_day_entry = Entry(self.frame11_add_student)
         self.payment_day_entry.place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
-        self.amount_paid_label = Label(self.frame12_add_student, font=40, text='Cantidad Pagada')
+        self.amount_paid_label = Label(self.frame12_add_student, font=('Times', 15), text='Cantidad Pagada')
         self.amount_paid_label.place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
-        self.amount_paid_entry = Entry(self.frame12_add_student, font=20)
+        self.amount_paid_entry = Entry(self.frame12_add_student)
         self.amount_paid_entry.place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
-        self.hours_of_access_label = Label(self.frame13_add_student, font=40, text='Accesso a horas')
+        self.hours_of_access_label = Label(self.frame13_add_student, font=('Times', 15), text='Accesso a horas')
         self.hours_of_access_label.place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
         self.hours_of_access_entry = Entry(self.frame13_add_student)
         self.hours_of_access_entry.place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
-        self.register_user_information = Button(self.frame_14_add_student, text='Registrar/Actualizar Informacion', font=20, command=self.register_user)
+        self.register_user_information = Button(self.frame_14_add_student, text='Registrar/Actualizar Informacion', command=self.register_user)
         self.register_user_information.place(relheight=.8, relwidth=.9, rely=.1, relx=.05)
 
     def remove_user_information_interface(self):
@@ -707,7 +712,7 @@ class FrontEnd:
             # Check ID Entry and Full Name Entry for existing users
             if self.check_records(self.user_id_entry.get(), self.user_name_entry.get()) != 1:
                 # Create Label to present user with 'Fill in Required fields'
-                Label(root, text='Llena los campos con *', font=20).place(relheight=.1, relwidth=.2, relx=.4, rely=.45)
+                Label(root, text='Llena los campos con *').place(relheight=.1, relwidth=.2, relx=.4, rely=.45)
 
         # Check if all required fields are filled
         elif self.user_birthday_entry.get() != '':
@@ -751,10 +756,11 @@ class FrontEnd:
                     self.complete_students_data.pop(i)
             self.complete_students_data.append([user_id, user_name, birthday, parent_address, parent_telephone, parent_email, father_name, mother_name, inscription_date, payment_date, amount_paid, amount_of_hours])
             json.dump(self.complete_students_data, open('Students', 'w'))
-            # Remove everything and create main grid
+            # Remove everything except return Button
             for i in root.winfo_children():
-                if i == root.winfo_children()[0]:
+                if i != root.winfo_children()[0]:
                     i.destroy()
+            # Create Main Grid
 
     def check_records(self, user_id, user_name):
         # Check if there is an ID and name
