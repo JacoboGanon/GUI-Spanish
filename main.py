@@ -90,8 +90,11 @@ class FrontEnd:
         try:
             self.add_activity_button.destroy()
             self.add_activity_entry.destroy()
+            self.add_levels_label.destroy()
+            self.add_levels_entry.destroy()
             self.frame1_activity_page.destroy()
             self.frame2_activity_page.destroy()
+            self.frame3_activity_page.destroy()
         except AttributeError:
             pass
         # Remove 'Añadir clase'
@@ -124,12 +127,16 @@ class FrontEnd:
             self.password_button.destroy()
             self.frame1_admin_password.destroy()
             self.frame2_admin_password.destroy()
-        # Remove 'Productos'
         except AttributeError:
             pass
+        # Remove 'Productos'
         try:
+            self.item_id_label.destroy()
+            self.item_id_entry.destroy()
             self.item_to_sell_entry.destroy()
             self.item_to_sell_label.destroy()
+            self.item_provider_label.destroy()
+            self.item_provider_entry.destroy()
             self.price_entry.destroy()
             self.price_label.destroy()
             self.current_inventory_entry.destroy()
@@ -142,6 +149,8 @@ class FrontEnd:
             self.frame5_admin_page.destroy()
             self.frame6_admin_page.destroy()
             self.frame7_admin_page.destroy()
+            self.frame8_admin_page.destroy()
+            self.frame9_admin_page.destroy()
         except AttributeError:
             pass
         # Remove 'Añadir Inverntario'
@@ -318,41 +327,52 @@ class FrontEnd:
         self.frame1_admin_page.place(relx=self.width2_1 - 0.15, rely=self.height4_1 - 0.05, relwidth=0.3, relheight=.1)
         self.frame2_admin_page.place(relx=self.width2_2 - 0.15, rely=self.height4_1 - 0.05, relwidth=0.3, relheight=.1)
         self.frame3_admin_page = Frame(root, bg=self.GREY)
-        self.frame3_admin_page.place(relx=self.width2_1 - 0.15, rely=self.height4_2 - 0.05, relwidth=0.3, relheight=.1)
+        self.frame3_admin_page.place(relx=self.width3_1 - 0.1, rely=self.height4_2 - 0.05, relwidth=0.2, relheight=.1)
         self.frame4_admin_page = Frame(root, bg=self.GREY)
-        self.frame4_admin_page.place(relx=self.width2_2 - 0.15, rely=self.height4_2 - 0.05, relwidth=0.3, relheight=.1)
+        self.frame4_admin_page.place(relx=self.width3_2 - 0.1, rely=self.height4_2 - 0.05, relwidth=0.2, relheight=.1)
         self.frame5_admin_page = Frame(root, bg=self.GREY)
-        self.frame5_admin_page.place(relx=self.width2_1 - 0.15, rely=self.height4_3 - 0.05, relwidth=0.3, relheight=.1)
+        self.frame5_admin_page.place(relx=self.width3_3 - 0.1, rely=self.height4_2 - 0.05, relwidth=0.2, relheight=.1)
         self.frame6_admin_page = Frame(root, bg=self.GREY)
-        self.frame6_admin_page.place(relx=self.width2_2 - 0.15, rely=self.height4_3 - 0.05, relwidth=0.3, relheight=.1)
+        self.frame6_admin_page.place(relx=self.width3_1 - 0.1, rely=self.height4_3 - 0.05, relwidth=0.2, relheight=.1)
         self.frame7_admin_page = Frame(root, bg=self.GREY)
-        self.frame7_admin_page.place(relx=self.width3_2 - 0.15, rely=self.height4_4 - 0.03, relwidth=0.3, relheight=.06)
+        self.frame7_admin_page.place(relx=self.width3_2 - 0.1, rely=self.height4_3 - 0.05, relwidth=0.2, relheight=.1)
+        self.frame8_admin_page = Frame(root, bg=self.GREY)
+        self.frame8_admin_page.place(relx=self.width3_3 - 0.1, rely=self.height4_3 - 0.05, relwidth=0.2, relheight=.1)
+        self.frame9_admin_page = Frame(root, bg=self.GREY)
+        self.frame9_admin_page.place(relx=self.width3_2 - 0.15, rely=self.height4_4 - 0.03, relwidth=0.3, relheight=.06)
+
         # Information Widgets
-        self.item_to_sell_label = Label(self.frame3_admin_page, bg=self.GREY, fg=self.WHITE, text="Nombre de Producto")
+        self.item_id_label = Label(self.frame3_admin_page, bg=self.GREY, fg=self.WHITE, text="Codigo de Producto")
+        self.item_id_label.place(relx=0.15, rely=0.5, relwidth=0.7, relheight=0.3)
+        self.item_id_entry = Entry(self.frame3_admin_page)
+        self.item_id_entry.place(relx=0.15, rely=0.08, relwidth=0.7, relheight=0.3)
+        self.item_to_sell_label = Label(self.frame4_admin_page, bg=self.GREY, fg=self.WHITE, text="Nombre de Producto")
         self.item_to_sell_label.place(relx=0.15, rely=0.5, relwidth=0.7, relheight=0.3)
-        self.item_to_sell_entry = Entry(self.frame3_admin_page)
+        self.item_to_sell_entry = Entry(self.frame4_admin_page)
         self.item_to_sell_entry.place(relx=0.15, rely=0.08, relwidth=0.7, relheight=0.3)
-        self.price_label = Label(self.frame4_admin_page, bg=self.GREY, fg=self.WHITE, text="Precio de Producto")
+        self.item_provider_label = Label(self.frame5_admin_page, bg=self.GREY, fg=self.WHITE, text="Proveedor")
+        self.item_provider_label.place(relx=0.15, rely=0.5, relwidth=0.7, relheight=0.3)
+        self.item_provider_entry = Entry(self.frame5_admin_page)
+        self.item_provider_entry.place(relx=0.15, rely=0.08, relwidth=0.7, relheight=0.3)
+        self.price_label = Label(self.frame6_admin_page, bg=self.GREY, fg=self.WHITE, text="Precio de Producto")
         self.price_label.place(relx=0.15, rely=0.5, relwidth=0.7, relheight=0.3)
-        self.price_entry = Entry(self.frame4_admin_page)
+        self.price_entry = Entry(self.frame6_admin_page)
         self.price_entry.place(relx=0.15, rely=0.08, relwidth=0.7, relheight=0.3)
-        self.current_inventory_label = Label(self.frame5_admin_page, bg=self.GREY, fg=self.WHITE, text="Cantidad en Inventario")
+        self.current_inventory_label = Label(self.frame7_admin_page, bg=self.GREY, fg=self.WHITE, text="Cantidad en Inventario")
         self.current_inventory_label.place(relx=0.15, rely=0.5, relwidth=0.7, relheight=0.3)
-        self.current_inventory_entry = Entry(self.frame5_admin_page)
+        self.current_inventory_entry = Entry(self.frame7_admin_page)
         self.current_inventory_entry.place(relx=0.15, rely=0.08, relwidth=0.7, relheight=0.3)
-        self.cost_entry = Entry(self.frame6_admin_page)
+        self.cost_entry = Entry(self.frame8_admin_page)
         self.cost_entry.place(relx=0.15, rely=0.08, relwidth=0.7, relheight=0.3)
-        self.cost_label = Label(self.frame6_admin_page, bg=self.GREY, fg=self.WHITE, text='Costo de Producto')
+        self.cost_label = Label(self.frame8_admin_page, bg=self.GREY, fg=self.WHITE, text='Costo de Producto')
         self.cost_label.place(relx=0.15, rely=0.5, relwidth=0.7, relheight=0.3)
         # Register Widget
-        self.register_button = Button(self.frame7_admin_page, text="Registrar Producto", bg=self.ORANGE, fg=self.WHITE, command=self.update_products_information)
+        self.register_button = Button(self.frame9_admin_page, text="Registrar Producto", bg=self.ORANGE, fg=self.WHITE, command=self.update_products_information)
         self.register_button.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
 
     def update_products_information(self):
-        temp_data = [self.item_to_sell_entry.get(), int(self.price_entry.get()), int(self.current_inventory_entry.get()), int(self.cost_entry.get())]
-        if temp_data in self.complete_products_data:
-            pass
-        else:
+        temp_data = [self.item_id_entry.get(), self.item_to_sell_entry.get(), self.item_provider_entry.get(), int(self.price_entry.get()), int(self.current_inventory_entry.get()), int(self.cost_entry.get())]
+        if temp_data not in self.complete_products_data:
             self.complete_products_data.append(temp_data)
             json.dump(self.complete_products_data, open('products_information', 'w'))
 
