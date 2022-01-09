@@ -16,8 +16,7 @@ class FrontEnd:
 
         # Overriding default-font with custom settings
         # i.e changing font-family, size and weight
-        self.defaultFont.configure(family="Times",
-                                   size=20)
+        self.defaultFont.configure(family="Times", size=20)
         # Heights (Format = self.height, number of columns, number in column)
         self.total_price = 0
         self.height1_1 = 0.5
@@ -62,6 +61,9 @@ class FrontEnd:
 
         # Labels presented
         self.list_of_labels = []
+
+        # Listbox Selections
+        self.listbox_selection = 0
 
     def remove_everything(self):
         # Remove 'Clases'
@@ -437,39 +439,45 @@ class FrontEnd:
         self.remove_everything()
         # Create Frames
         self.frame1_class_page = Frame(root, bg=self.GREY)
-        self.frame1_class_page.place(relx=self.width2_1-.15, rely=self.height4_2-.05, relwidth=.3, relheight=.1)
+        self.frame1_class_page.place(relx=self.width3_1-.1, rely=self.height4_2-.05, relwidth=.2, relheight=.1)
         self.frame2_class_page = Frame(root, bg=self.GREY)
-        self.frame2_class_page.place(relx=self.width2_2-.15, rely=self.height4_2-.05, relwidth=.3, relheight=.1)
+        self.frame2_class_page.place(relx=self.width3_2-.1, rely=self.height4_2-.05, relwidth=.2, relheight=.1)
         self.frame3_class_page = Frame(root, bg=self.GREY)
-        self.frame3_class_page.place(relx=self.width2_1-.15, rely=self.height4_3-.05, relwidth=.3, relheight=.1)
+        self.frame3_class_page.place(relx=self.width3_3-.1, rely=self.height4_2-.05, relwidth=.2, relheight=.1)
         self.frame4_class_page = Frame(root, bg=self.GREY)
-        self.frame4_class_page.place(relx=self.width2_2-.15, rely=self.height4_3-.05, relwidth=.3, relheight=.1)
+        self.frame4_class_page.place(relx=self.width2_1-.15, rely=self.height4_3-.05, relwidth=.3, relheight=.1)
         self.frame5_class_page = Frame(root, bg=self.GREY)
-        self.frame5_class_page.place(relx=self.width2_1-.15, rely=self.height4_4 - .04, relwidth=.3, relheight=.08)
+        self.frame5_class_page.place(relx=self.width2_2-.15, rely=self.height4_3-.05, relwidth=.3, relheight=.1)
         self.frame6_class_page = Frame(root, bg=self.GREY)
-        self.frame6_class_page.place(relx=self.width2_2-.15, rely=self.height4_4 - .04, relwidth=.3, relheight=.08)
+        self.frame6_class_page.place(relx=self.width2_1-.15, rely=self.height4_4 - .04, relwidth=.3, relheight=.08)
+        self.frame7_class_page = Frame(root, bg=self.GREY)
+        self.frame7_class_page.place(relx=self.width2_2-.15, rely=self.height4_4 - .04, relwidth=.3, relheight=.08)
         # Create Listbox, Entries, Labels, and Button
         self.list_of_activities = Combobox(self.frame1_class_page)
         self.list_of_activities.place(relx=.05, rely=.1, relwidth=.9, relheight=.8)
-        counter = 0
         self.day_of_week = Listbox(self.frame2_class_page, height=4)
         self.day_of_week.place(relx=.05, rely=.1, relwidth=.9, relheight=.8)
-        self.time_schedule_entry = Entry(self.frame3_class_page, fg='grey')
+        self.list_of_activities.bind('<Return>', self.get_value)
+
+        # Create Time Schedule example Entry
+        self.time_schedule_entry = Entry(self.frame4_class_page, fg='grey')
         self.time_schedule_entry.place(relx=.05, rely=.05, relwidth=.9, relheight=.4)
         self.time_schedule_entry.insert(0, 'Ejemplo (12:00-14:00)')
         self.time_schedule_entry.bind('<FocusIn>', self.focus_in)
-        self.time_schedule_label = Label(self.frame3_class_page, bg=self.GREY, fg=self.WHITE, text='Horario')
+
+        # Create rest of widgets
+        self.time_schedule_label = Label(self.frame4_class_page, bg=self.GREY, fg=self.WHITE, text='Horario')
         self.time_schedule_label.place(relx=.05, rely=.5, relwidth=.9, relheight=.4)
-        self.list_of_activities_button = Button(self.frame6_class_page, bg=self.ORANGE, fg=self.WHITE, text='Registrar Clase', command=self.add_class)
-        self.list_of_activities_button.place(relx=.05, rely=.1, relwidth=.9, relheight=.8)
-        self.teacher_entry = Entry(self.frame4_class_page)
+        self.teacher_entry = Entry(self.frame5_class_page)
         self.teacher_entry.place(relx=.05, rely=.05, relwidth=.9, relheight=.4)
-        self.teacher_label = Label(self.frame4_class_page, bg=self.GREY, fg=self.WHITE, text='Maestro')
+        self.teacher_label = Label(self.frame5_class_page, bg=self.GREY, fg=self.WHITE, text='Maestro')
         self.teacher_label.place(relx=.05, rely=.5, relwidth=.9, relheight=.4)
-        self.available_seats_entry = Entry(self.frame5_class_page)
+        self.available_seats_entry = Entry(self.frame6_class_page)
         self.available_seats_entry.place(relx=.05, rely=.05, relwidth=.9, relheight=.4)
-        self.available_seats_label = Label(self.frame5_class_page, bg=self.GREY, fg=self.WHITE, text='Lugares Disponibles')
+        self.available_seats_label = Label(self.frame6_class_page, bg=self.GREY, fg=self.WHITE, text='Lugares Disponibles')
         self.available_seats_label.place(relx=.05, rely=.5, relwidth=.9, relheight=.4)
+        self.list_of_activities_button = Button(self.frame7_class_page, bg=self.ORANGE, fg=self.WHITE, text='Registrar Clase', command=self.add_class)
+        self.list_of_activities_button.place(relx=.05, rely=.1, relwidth=.9, relheight=.8)
         # Add days of week
         self.day_of_week.insert(0, 'Lunes')
         self.day_of_week.insert(1, 'Martes')
@@ -828,6 +836,15 @@ class FrontEnd:
                 temp_frame.grid(row=1, column=column, padx=10, pady=35)
                 for p in range(0, 5):
                     Checkbutton(temp_frame, text=day_of_week[p], variable=IntVar(), font=('Times', 12)).grid(row=0, column=p, sticky='s', padx=5)
+                counter = 0
+                # Create Listbox
+                temp_listbox = Listbox(self.frame16_add_student, height=3)
+                for p in i[1].split(', '):
+                    temp_listbox.insert(counter, p)
+                    counter += 1
+                temp_listbox.grid(row=2, column=column, padx=10, pady=10)
+
+                # Next Column
                 column += 1
 
     def check_records(self, user_id, user_name):
@@ -938,6 +955,20 @@ class FrontEnd:
     def focus_in1(self, _):
         self.add_levels_entry.delete(0, END)
         self.add_levels_entry.config(fg='black')
+
+    def get_value(self, _):
+        self.listbox_selection = self.list_of_activities.get()
+        r = 0
+        c = 0
+        for i in self.complete_classes_data:
+            if self.listbox_selection == i[0]:
+                print('Hello')
+                for p in i[1].split(', '):
+                    Checkbutton(self.frame3_class_page, text=p, variable=IntVar()).grid(row=r, column=c, padx=5, pady=5)
+                    c += 1
+                    if c == 3:
+                        c = 0
+                        r += 1
 
 if __name__ == '__main__':
     front = FrontEnd()
