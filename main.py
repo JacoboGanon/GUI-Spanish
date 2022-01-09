@@ -7,9 +7,6 @@ import json
 root = Tk()
 root.geometry('%dx%d' % (root.winfo_screenwidth(), root.winfo_screenheight()))
 
-# Add scrollbar
-main_frame = Frame(root)
-
 
 # Main Loop
 class FrontEnd:
@@ -100,14 +97,8 @@ class FrontEnd:
             pass
         # Remove 'Productos' In sell mode
         try:
-            for i in self.products_frame.winfo_children():
+            for i in root.winfo_children():
                 i.destroy()
-            for i in self.buttons_frame.winfo_children():
-                i.destroy()
-            for i in self.register_products_frame.winfo_children():
-                i.destroy()
-                self.list_of_labels.clear()
-            self.divide_frame.destroy()
 
         except AttributeError:
             pass
@@ -644,11 +635,8 @@ class FrontEnd:
         counter = 0
         row = 0
         for i in root.winfo_children():
-            if i == root.winfo_children()[0]:
-                pass
-            else:
-                i.place(relx=counter * .165 + .005, rely=row * .105 + .005, relwidth=.16, relheight=.08)
-                counter += 1
+            i.place(relx=counter * .165 + .005, rely=row * .105 + .005, relwidth=.16, relheight=.08)
+            counter += 1
             if counter == 6:
                 counter = 0
                 row += 1
@@ -685,17 +673,19 @@ class FrontEnd:
     def remove_user_information_interface(self):
         # Iterate through all frames
         for i in root.winfo_children():
-            if i != root.winfo_children()[0]:  # Don't Destroy main Frame
-                i.destroy()  # Destroy current Frame iteration
+            i.destroy()  # Destroy current Frame iteration
         self.main_page()
 
     def register_user(self):
         # Iterate through all frames
         for i in root.winfo_children():
-            if i != root.winfo_children()[0] and i != root.winfo_children()[1]:  # Don't Destroy main Frame or Return Button
+            if i != root.winfo_children()[0]:  # Don't Destroy main Frame or Return Button
                 i.destroy()  # Destroy current Frame Iteration
         # Change Return button Command
         self.return_button.configure(command=self.remove_user_information_interface)
+        # Create Frame for Main Grid
+
+
 
     def remove_student(self):
         self.remove_everything()
