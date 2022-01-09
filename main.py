@@ -378,13 +378,19 @@ class FrontEnd:
         self.remove_everything()
         # Frames
         self.frame1_activity_page = Frame(root, bg=self.GREY)
-        self.frame1_activity_page.place(relx=self.width2_1-.15, rely=self.height4_2-.04, relwidth=.3, relheight=.08)
+        self.frame1_activity_page.place(relx=self.width3_1-.15, rely=self.height4_2-.05, relwidth=.3, relheight=.1)
         self.frame2_activity_page = Frame(root, bg=self.GREY)
-        self.frame2_activity_page.place(relx=self.width2_2-.15, rely=self.height4_2-.04, relwidth=.3, relheight=.08)
+        self.frame2_activity_page.place(relx=self.width3_2-.15, rely=self.height4_2-.05, relwidth=.3, relheight=.1)
+        self.frame3_activity_page = Frame(root, bg=self.GREY)
+        self.frame3_activity_page.place(relx=self.width3_3-.15, rely= self.height4_2-.05, relwidth=.3, relheight=.1)
         # Add Activity Entry and Button
         self.add_activity_entry = Entry(self.frame1_activity_page)
-        self.add_activity_entry.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
-        self.add_activity_button = Button(self.frame2_activity_page, bg=self.ORANGE, fg=self.WHITE, text='Añadir Actividad', command=self.add_activity_to_sell)
+        self.add_activity_entry.place(relx=0.05, rely=.05, relwidth=0.9, relheight=0.4)
+        self.add_activity_label = Label(self.frame1_activity_page, bg=self.GREY, text='Actividad')
+        self.add_levels_entry = Entry(self.frame2_activity_page)
+        self.add_levels_entry.place(relx=.05, rely=.05, relwidth=.9, relheight=.4)
+        self.add_levels_label = Label(self.frame2_activity_page, bg=self.GREY, text='Niveles')
+        self.add_activity_button = Button(self.frame3_activity_page, bg=self.ORANGE, fg=self.WHITE, text='Añadir Actividad', command=self.add_activity_to_sell)
         self.add_activity_button.place(relx=0.05, rely=.1, relwidth=.9, relheight=.8)
 
     def add_activity_to_sell(self):
