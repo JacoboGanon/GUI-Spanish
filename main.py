@@ -378,20 +378,22 @@ class FrontEnd:
         self.remove_everything()
         # Frames
         self.frame1_activity_page = Frame(root, bg=self.GREY)
-        self.frame1_activity_page.place(relx=self.width3_1-.15, rely=self.height4_2-.05, relwidth=.3, relheight=.1)
+        self.frame1_activity_page.place(relx=self.width3_1-.1, rely=self.height4_2-.05, relwidth=.2, relheight=.1)
         self.frame2_activity_page = Frame(root, bg=self.GREY)
-        self.frame2_activity_page.place(relx=self.width3_2-.15, rely=self.height4_2-.05, relwidth=.3, relheight=.1)
+        self.frame2_activity_page.place(relx=self.width3_2-.1, rely=self.height4_2-.05, relwidth=.2, relheight=.1)
         self.frame3_activity_page = Frame(root, bg=self.GREY)
-        self.frame3_activity_page.place(relx=self.width3_3-.15, rely= self.height4_2-.05, relwidth=.3, relheight=.1)
+        self.frame3_activity_page.place(relx=self.width3_3-.1, rely= self.height4_2-.05, relwidth=.2, relheight=.1)
         # Add Activity Entry and Button
         self.add_activity_entry = Entry(self.frame1_activity_page)
-        self.add_activity_entry.place(relx=0.05, rely=.05, relwidth=0.9, relheight=0.4)
+        self.add_activity_entry.place(relx=0.05, rely=.075, relwidth=0.9, relheight=0.4)
         self.add_activity_label = Label(self.frame1_activity_page, bg=self.GREY, text='Actividad')
+        self.add_activity_label.place(relx=0.05, rely=.5, relwidth=.9, relheight=.4)
         self.add_levels_entry = Entry(self.frame2_activity_page, fg='grey')
-        self.add_levels_entry.place(relx=.05, rely=.05, relwidth=.9, relheight=.4)
+        self.add_levels_entry.place(relx=.05, rely=.075, relwidth=.9, relheight=.4)
         self.add_levels_entry.insert(0, 'Ejemplo: (1, 2, 3) o (blanco, amarillo, verde)')
         self.add_levels_entry.bind('<FocusIn>', self.focus_in1)
         self.add_levels_label = Label(self.frame2_activity_page, bg=self.GREY, text='Niveles')
+        self.add_levels_label.place(relx=0.05, rely=.5, relwidth=.9, relheight=.4)
         self.add_activity_button = Button(self.frame3_activity_page, bg=self.ORANGE, fg=self.WHITE, text='Añadir Actividad', command=self.add_activity_to_sell)
         self.add_activity_button.place(relx=0.05, rely=.1, relwidth=.9, relheight=.8)
 
@@ -901,7 +903,7 @@ class FrontEnd:
         self.time_schedule_entry.delete(0, END)
         self.time_schedule_entry.config(fg='black')
 
-    def focus_in1(self):
+    def focus_in1(self, _):
         self.add_levels_entry.delete(0, END)
         self.add_levels_entry.config(fg='black')
 
