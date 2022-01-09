@@ -705,10 +705,47 @@ class FrontEnd:
         # Check ID Entry and Full Name Entry for existing users
         user_id = self.user_id_entry.get()
         user_name = self.user_name_entry.get()
-        print(user_id, user_name)
-        # Change Return button Command
-        self.return_button.configure(command=self.remove_user_information_interface)
+        # If it finds User ID or User Name skip the rest of data collection
+        if self.check_records(user_id, user_name) != 1:
+            # If there is no assigned user id create one
+            if user_id == '':
+                user_id = len(self.complete_students_data)
+                while True:
+                    counter = 0
+                    # Format it as a string
+                    if 0 <= user_id < 10:
+                        user_id = f'000{user_id}'
+                    elif 10 <= user_id < 100:
+                        user_id = f'00{user_id}'
+                    elif 100 <= user_id < 1000:
+                        user_id = f'0{user_id}'
+                    else:
+                        user_id = str(user_id)
+                    # Check if it is occupied
+                    for i in self.complete_students_data:
+                        if i[0] == user_id:
+                            user_id = int(user_id) + 1
+                        else:
+                            counter += 1
+                    if counter == len(self.complete_students_data):
+                        break
 
+
+    def check_records(self, user_id, user_name):
+        # Check if there is an ID
+        if user_id != '':
+            for i in self.complete_students_data:
+                if user_id == i[0]:
+                    # Get student information written into Entries
+                    # Skip rest of register_user if it finds user id
+                    return 1
+        # Check by Name
+        if user_name != '':
+            for i in self.complete_students_data:
+                if user_name == i[1]:
+                    # Get student information written into Entries
+                    # Skip rest of register_user if it finds username
+                    return 1
 
     def remove_student(self):
         self.remove_everything()
