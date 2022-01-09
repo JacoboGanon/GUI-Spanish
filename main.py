@@ -654,11 +654,11 @@ class FrontEnd:
         self.user_id_label.place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
         self.user_id_entry = Entry(self.frame2_add_student)
         self.user_id_entry.place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
-        self.user_name_label = Label(self.frame3_add_student, font=('Times', 15), text='Nombre Completo Alumno')
+        self.user_name_label = Label(self.frame3_add_student, font=('Times', 15), text='Nombre Completo Alumno*')
         self.user_name_label.place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
         self.user_name_entry = Entry(self.frame3_add_student)
         self.user_name_entry.place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
-        self.user_birthday_label = Label(self.frame4_add_student, font=('Times', 15), text='Fecha de Nacimiento')
+        self.user_birthday_label = Label(self.frame4_add_student, font=('Times', 15), text='Fecha de Nacimiento*')
         self.user_birthday_label.place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
         self.user_birthday_entry = Entry(self.frame4_add_student)
         self.user_birthday_entry.place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
@@ -666,7 +666,7 @@ class FrontEnd:
         self.parent_address_label.place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
         self.parent_address_entry = Entry(self.frame5_add_student)
         self.parent_address_entry.place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
-        self.parent_phone_label = Label(self.frame6_add_student, font=('Times', 15), text='Telefono')
+        self.parent_phone_label = Label(self.frame6_add_student, font=('Times', 15), text='Telefono*')
         self.parent_phone_label.place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
         self.parent_phone_entry = Entry(self.frame6_add_student)
         self.parent_phone_entry.place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
@@ -713,14 +713,14 @@ class FrontEnd:
 
     def register_user(self):
         # Check if required entries are registered
-        if self.user_birthday_entry.get() == '':
+        if self.user_birthday_entry.get() == '' or self.user_name_entry.get() == '' or self.parent_phone_entry.get() == '':
             # Check ID Entry and Full Name Entry for existing users
             if self.check_records(self.user_id_entry.get(), self.user_name_entry.get()) != 1:
                 # Create Label to present user with 'Fill in Required fields'
                 Label(root, text='Llena los campos con *').place(relheight=.1, relwidth=.2, relx=.4, rely=.45)
 
         # Check if all required fields are filled
-        elif self.user_birthday_entry.get() != '':
+        else:
             user_id = self.user_id_entry.get()
             user_name = self.user_name_entry.get()
             # If there is no assigned user id create one
