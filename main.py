@@ -1,6 +1,6 @@
 # Imports
-from tkinter import Tk, Label, Frame, Entry, Button, font, Listbox, messagebox, END, Checkbutton, IntVar
-from tkinter.ttk import Combobox
+from tkinter import Tk, Label, Frame, Entry, Button, font, Listbox, messagebox, END, IntVar
+from tkinter.ttk import Combobox, Checkbutton
 import os
 import json
 # Create Window
@@ -498,8 +498,12 @@ class FrontEnd:
         start_hour, start_minute = start_time.split(':')
         end_hour, end_minute = end_time.split(':')
         start_hour, start_minute, end_hour, end_minute = int(start_hour), int(start_minute), int(end_hour), int(end_minute)
+        levels = []
+        for i in self.frame3_class_page.winfo_children():
+            if i.instate(['selected']):
+                levels.append(i['text'])
         if start_hour + 1 == end_hour:
-            ready_to_append = [day_of_week, self.time_schedule_entry.get(), self.teacher_entry.get(), int(self.available_seats_entry.get())]
+            ready_to_append = [levels, day_of_week, self.time_schedule_entry.get(), self.teacher_entry.get(), int(self.available_seats_entry.get())]
             for i in range(len(self.complete_classes_data)):
                 if self.complete_classes_data[i][0] == activity:
                     self.complete_classes_data[i].append(ready_to_append)
@@ -507,7 +511,7 @@ class FrontEnd:
             while start_hour != end_hour:
                 for i in range(len(self.complete_classes_data)):
                     if self.complete_classes_data[i][0] == activity:
-                        self.complete_classes_data[i].append([day_of_week, f'{start_hour}:{"00" if start_minute == 0 else start_minute}-{start_hour+1}:{"00" if end_minute == 0 else end_minute}', self.teacher_entry.get(), int(self.available_seats_entry.get())])
+                        self.complete_classes_data[i].append([levels, day_of_week, f'{start_hour}:{"00" if start_minute == 0 else start_minute}-{start_hour+1}:{"00" if end_minute == 0 else end_minute}', self.teacher_entry.get(), int(self.available_seats_entry.get())])
                         start_hour += 1
         json.dump(self.complete_classes_data, open('Available_Classes.txt', 'w'))
 
@@ -831,18 +835,22 @@ class FrontEnd:
             column = 1
             day_of_week = ('L', 'M', 'M', 'J', 'V')
             for i in self.complete_classes_data:
+                # Create list of activities
                 Label(self.frame16_add_student, text=i[0], bg='#9fb5b7', font=('Times', 20)).grid(row=0, column=column, padx=50, pady=20)
                 temp_frame = Frame(self.frame16_add_student, bg='#9fb5b7')
+                # Create Checkboxes
                 temp_frame.grid(row=1, column=column, padx=10, pady=35)
                 for p in range(0, 5):
-                    Checkbutton(temp_frame, text=day_of_week[p], variable=IntVar(), font=('Times', 12)).grid(row=0, column=p, sticky='s', padx=5)
+                    Checkbutton(temp_frame, text=day_of_week[p]).grid(row=0, column=p, sticky='s', padx=5)
                 counter = 0
-                # Create Listbox
+                # Create Listbox for levels
                 temp_listbox = Listbox(self.frame16_add_student, height=3)
                 for p in i[1].split(', '):
                     temp_listbox.insert(counter, p)
                     counter += 1
                 temp_listbox.grid(row=2, column=column, padx=10, pady=10)
+                # Make Time Suggestions based on level and activity
+
 
                 # Next Column
                 column += 1
@@ -962,9 +970,8 @@ class FrontEnd:
         c = 0
         for i in self.complete_classes_data:
             if self.listbox_selection == i[0]:
-                print('Hello')
                 for p in i[1].split(', '):
-                    Checkbutton(self.frame3_class_page, text=p, variable=IntVar()).grid(row=r, column=c, padx=5, pady=5)
+                    Checkbutton(self.frame3_class_page, text=p).grid(row=r, column=c, padx=5, pady=5)
                     c += 1
                     if c == 3:
                         c = 0
