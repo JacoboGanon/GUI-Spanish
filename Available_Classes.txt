@@ -1,1 +1,1 @@
-[["Gimnasia", "1, 2, 3, 4"]], ["Karate", "Blanco, Amarillo, Verde, Azul"]]
+[["Gimnasia", "1, 2, 3, 4", [["1", "3"], "Lunes", "12:00-13:00", "Lulu", 10], [["1", "3"], "Lunes", "13:00-14:00", "Lulu", 10]], ["Karate", "Blanco, Amarillo, Verde, Azul"]]

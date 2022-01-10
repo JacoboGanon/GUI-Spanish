@@ -90,6 +90,7 @@ class FrontEnd:
             self.frame4_class_page.destroy()
             self.frame5_class_page.destroy()
             self.frame6_class_page.destroy()
+            self.frame7_class_page.destroy()
         except AttributeError:
             pass
         # Remove 'Añadir Actividad'
@@ -835,22 +836,31 @@ class FrontEnd:
             column = 1
             day_of_week = ('L', 'M', 'M', 'J', 'V')
             for i in self.complete_classes_data:
+                list_to_tuple = []
+
                 # Create list of activities
                 Label(self.frame16_add_student, text=i[0], bg='#9fb5b7', font=('Times', 20)).grid(row=0, column=column, padx=50, pady=20)
                 temp_frame = Frame(self.frame16_add_student, bg='#9fb5b7')
+
                 # Create Checkboxes
                 temp_frame.grid(row=1, column=column, padx=10, pady=35)
                 for p in range(0, 5):
                     Checkbutton(temp_frame, text=day_of_week[p]).grid(row=0, column=p, sticky='s', padx=5)
                 counter = 0
+
                 # Create Listbox for levels
                 temp_listbox = Listbox(self.frame16_add_student, height=3)
+                temp_listbox.bind('<<ListboxSelect>>', self.listbox_value)
                 for p in i[1].split(', '):
                     temp_listbox.insert(counter, p)
                     counter += 1
                 temp_listbox.grid(row=2, column=column, padx=10, pady=10)
-                # Make Time Suggestions based on level and activity
 
+                # Make Time Suggestions based on level and activity
+                temp_combo_box = Combobox(self.frame16_add_student)
+                temp_combo_box.grid(row=3, column=column, padx=50, pady=35)
+
+                temp_combo_box['values'] = tuple(list_to_tuple)
 
                 # Next Column
                 column += 1
@@ -976,6 +986,23 @@ class FrontEnd:
                     if c == 3:
                         c = 0
                         r += 1
+
+    def listbox_value(self, _):
+        for i in self.frame16_add_student.grid_slaves(row=2):
+            if i != self.frame16_add_student.grid_slaves(row=2)[2]:
+                list_of_levels = list(i.get(0, END))
+                levels_as_string = str(list_of_levels[0])
+                for p in range(1, len(list_of_levels)):
+                    levels_as_string += ', ' + str(list_of_levels[p])
+                for p in range(len(self.complete_classes_data)):
+                    if self.complete_classes_data[p][1] == levels_as_string:
+                        try:
+                            current_selection = i.get(i.curselection())
+                        except:
+                            pass
+
+        return current_selection
+
 
 if __name__ == '__main__':
     front = FrontEnd()
