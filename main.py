@@ -826,7 +826,7 @@ class FrontEnd:
             json.dump(self.complete_students_data, open('Students.txt', 'w'))
             # Create Frame for main grid
             self.frame16_add_student = Frame(root, bg='#9fb5b7')
-            self.frame16_add_student.place(rely=.35, relx=.05, relheight=.6, relwidth=.9)
+            self.frame16_add_student.place(rely=.35, relx=.025, relheight=.6, relwidth=.85)
             # Create Grid
             Label(self.frame16_add_student, text='Dia', bg='#9fb5b7', font=('Times', 20)).grid(row=1, column=0, padx=20, pady=35)
             Label(self.frame16_add_student, text='Nivel', bg='#9fb5b7', font=('Times', 20)).grid(row=2, column=0, padx=20, pady=35)
@@ -870,6 +870,7 @@ class FrontEnd:
                 column += 1
 
             # Create
+            Button(root, text='Register Graph', command=self.register_graph).place(relx=.895, relheight=.1, relwidth=.095, rely=.6)
 
     def check_records(self, user_id, user_name):
         # Check if there is an ID and name
@@ -1046,8 +1047,73 @@ class FrontEnd:
                         if day_list[x]:
                             for p in range(2, len(i)):
                                 if level in i[p][0] and teacher in i[p] and days_of_week[x] in i[p] and y in i[p][2]:
-                                    print('Hello World!')
                                     Label(self.frame16_add_student, text=i[p][4], bg='#9fb5b7').grid(row=5, column=column, padx=30)
+    def register_graph(self):
+        days_of_week = ('Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes')
+        for column in range(1, len(self.complete_classes_data) + 1):
+            not_empty = True
+            for i in self.frame16_add_student.winfo_children():
+                if i in self.frame16_add_student.grid_slaves(row=3, column=column):
+                    try:
+                        time = i.get()
+                        start_time, end_time = time.split('-')
+                    except ValueError:
+                        not_empty = False
+            if not_empty:
+                for i in self.frame16_add_student.winfo_children():
+                    if i in self.frame16_add_student.grid_slaves(row=0, column=column):
+                        activity = i.cget('text')
+                    if i in self.frame16_add_student.grid_slaves(row=1, column=column):
+                        day_list = [p.instate(['selected']) for p in i.winfo_children()]
+                    if i in self.frame16_add_student.grid_slaves(row=2, column=column):
+                        level = self.last_selection
+                    if i in self.frame16_add_student.grid_slaves(row=3, column=column):
+                        times = []
+                        time = i.get()
+                        start_time, end_time = time.split('-')
+                        start_hour, start_minute = start_time.split(':')
+                        end_hour, end_minute = end_time.split(':')
+                        start_hour, end_hour = int(start_hour), int(end_hour)
+                        if start_hour + 1 == end_hour:
+                            times.append(f'{start_hour}:{start_minute}-{start_hour + 1}:{start_minute}')
+                        else:
+                            while start_hour != end_hour:
+                                times.append(f'{start_hour}:{start_minute}-{start_hour + 1}:{start_minute}')
+                                start_hour += 1
+                    if i in self.frame16_add_student.grid_slaves(row=4, column=column):
+                        teacher = i.get()
+                counter = 0
+                for i in self.complete_classes_data:
+                    if activity == i[0]:
+                        for x in range(len(day_list)):
+                            for y in times:
+                                counter2 = 0
+                                if day_list[x]:
+                                    for p in range(2, len(i)):
+                                        counter2 = 1 if (z for z in times) not in i[p] else 0
+                                        if counter2 == 0 or days_of_week[x] not in i[p]:
+                                            try:
+                                                self.not_available.destroy()
+                                            except AttributeError:
+                                                pass
+                                            self.not_available = Label(root, text='Dia o Hora no disponible', font=('Times', 13))
+                                            self.not_available.place(relx=.895, rely=.5, relwidth=.095, relheight=.08)
+                                            counter += 1
+                                        else:
+                                            try:
+                                                self.not_available.destroy()
+                                            except AttributeError:
+                                                pass
+
+                for i in self.complete_classes_data:
+                    if activity == i[0]:
+                        for x in range(len(day_list)):
+                            for y in times:
+                                if day_list[x]:
+                                    for p in range(2, len(i)):
+                                        if teacher in i[p] and days_of_week[x] in i[p] and y in i[p][2] and counter == 0:
+                                            i[p][4] -= 1
+                                            json.dump(self.complete_classes_data, open('Available_Classes.txt', 'w'))
 
 
 if __name__ == '__main__':
