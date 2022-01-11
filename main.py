@@ -917,7 +917,6 @@ class FrontEnd:
                 if user_id == self.complete_students_data[counter][0]:
                     # New Payment Date
                     if self.complete_students_data[counter][8] != inscription_date:
-                        # Date, payment type, quantity, payment type, description
                         current_date = inscription_date
                         payment_type = self.selected_payment_type
                         income = amount_paid
@@ -950,9 +949,37 @@ class FrontEnd:
                     self.complete_students_data.pop(counter)
                     counter2 = 1
                 counter += 1
-            if counter2 == 0 and (payment_date != '' or inscription_date != ''):
-                # First Payment
-                pass
+            # Check if it is the first payment
+            if counter2 == 0 and payment_date != '':
+                current_date = payment_date
+                payment_type = self.selected_payment_type
+                income = amount_paid
+                payment_type2 = 'Mensualidad'
+                description = f'Mensualidad de {user_name}'
+                ws = self.wb['Ingresos']
+                ws.insert_rows(2)
+                ws.cell(row=2, column=1, value=current_date)
+                ws.cell(row=2, column=1, value=payment_type)
+                ws.cell(row=2, column=1, value=income)
+                ws.cell(row=2, column=1, value=payment_type2)
+                ws.cell(row=2, column=1, value=description)
+                self.wb.save('income_expenses.xlsx')
+                self.wb = openpyxl.load_workbook('income_expenses.xlsx')
+            elif counter == 0 and inscription_date != '':
+                current_date = inscription_date
+                payment_type = self.selected_payment_type
+                income = amount_paid
+                payment_type2 = 'Inscripcion'
+                description = f'Inscripcion de {user_name}'
+                ws = self.wb['Ingresos']
+                ws.insert_rows(2)
+                ws.cell(row=2, column=1, value=current_date)
+                ws.cell(row=2, column=1, value=payment_type)
+                ws.cell(row=2, column=1, value=income)
+                ws.cell(row=2, column=1, value=payment_type2)
+                ws.cell(row=2, column=1, value=description)
+                self.wb.save('income_expenses.xlsx')
+                self.wb = openpyxl.load_workbook('income_expenses.xlsx')
             self.complete_students_data.append([user_id, user_name, birthday, parent_address, parent_telephone, parent_email, father_name, mother_name, inscription_date, payment_date, amount_paid, amount_of_hours, security_link])
             json.dump(self.complete_students_data, open('Students.txt', 'w'))
             # Create Frame for main grid
