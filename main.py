@@ -1114,6 +1114,11 @@ class FrontEnd:
                                         if teacher in i[p] and days_of_week[x] in i[p] and y in i[p][2] and counter == 0:
                                             i[p][4] -= 1
                                             json.dump(self.complete_classes_data, open('Available_Classes.txt', 'w'))
+                                            for z in range(len(self.complete_students_data)):
+                                                if self.complete_students_data[z][0] == self.user_id_entry.get():
+                                                    self.complete_students_data[z].append([activity, days_of_week[x], y, teacher])
+                                                    json.dump(self.complete_students_data, open('Students.txt', 'w'))
+
 
 
 if __name__ == '__main__':
