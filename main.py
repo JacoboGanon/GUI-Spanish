@@ -8,7 +8,7 @@ import json
 # Create Window
 root = Tk()
 root.geometry('%dx%d' % (root.winfo_screenwidth(), root.winfo_screenheight()))
-wb = openpyxl.Workbook()
+wb = openpyxl.Workbook
 
 # Main Loop
 class FrontEnd:
