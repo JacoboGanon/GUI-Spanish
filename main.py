@@ -325,6 +325,8 @@ class FrontEnd:
             counter += 1
             self.listbox_of_products.insert(counter, product_information[1])
             self.listbox_of_products_id.insert(counter, product_information[0])
+        self.listbox_of_products.bind('<<ListboxSelect>>', lambda event, a=1: self.get_value1(a))
+        self.listbox_of_products_id.bind('<<ListboxSelect>>', lambda event, a=0: self.get_value1(a))
         self.listbox_of_products.place(relx=.05, rely=.1, relwidth=.9, relheight=.8)
         self.listbox_of_products_id.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
         self.add_inventory_entry = Entry(self.frame5_admin_page, justify='center')
@@ -339,10 +341,7 @@ class FrontEnd:
         self.add_inventory_button.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
 
     def register_inventory(self):
-        try:
-            product = self.listbox_of_products.get(self.listbox_of_products.curselection())
-        except:
-            product = self.listbox_of_products_id.get(self.listbox_of_products_id.curselection())
+        product = self.last_product
         for i in range(0, len(self.complete_products_data)):
             if product in self.complete_products_data[i]:
                 self.complete_products_data[i][4] += int(self.add_inventory_entry.get())
@@ -1044,6 +1043,14 @@ class FrontEnd:
                     if c == 3:
                         c = 0
                         r += 1
+    def get_value1(self, column):
+        try:
+            if column == 0:
+                self.last_product = self.listbox_of_products_id.get(self.listbox_of_products_id.curselection())
+            if column == 1:
+                self.last_product = self.listbox_of_products.get(self.listbox_of_products.curselection())
+        except:
+            pass
 
     def listbox_value(self, column):
         try:
