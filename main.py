@@ -334,8 +334,22 @@ class FrontEnd:
         self.register_expense.place(relx=.05, rely=.1, relwidth=.9, relheight=.8)
 
     def log_expense(self):
-        pass
-
+        # Date, How it was paid, amount paid, category, description
+        current_date = datetime.now()
+        current_date = f'{current_date.day}{current_date.month}{current_date.year}'
+        payment_type = self.selected_payment_type
+        amount_paid = self.amount_paid_entry.get()
+        category = self.category_entry.get()
+        description = self.description_entry.get()
+        ws = self.wb['Egresos']
+        ws.insert_rows(2)
+        ws.cell(row=2, column=1, value=current_date)
+        ws.cell(row=2, column=2, value=payment_type)
+        ws.cell(row=2, column=3, value=amount_paid)
+        ws.cell(row=2, column=4, value=category)
+        ws.cell(row=2, column=5, value=description)
+        self.wb.save('income_expenses.xlsx')
+        self.wb = openpyxl.load_workbook('income_expenses.xlsx')
     def remove_product_form(self):
         self.remove_everything()
         # Create Frames
