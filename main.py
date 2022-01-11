@@ -350,6 +350,7 @@ class FrontEnd:
         ws.cell(row=2, column=5, value=description)
         self.wb.save('income_expenses.xlsx')
         self.wb = openpyxl.load_workbook('income_expenses.xlsx')
+
     def remove_product_form(self):
         self.remove_everything()
         # Create Frames
