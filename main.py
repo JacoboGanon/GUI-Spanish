@@ -25,6 +25,7 @@ class FrontEnd:
         self.defaultFont.configure(family="Times", size=20)
         # Heights (Format = self.height, number of columns, number in column)
         self.total_price = 0
+        self.selected_payment_type = 0
         self.height1_1 = 0.5
         self.height2_1 = .33
         self.height2_2 = .67
@@ -704,11 +705,7 @@ class FrontEnd:
         Label(self.register_products_frame, text=f'Total: {self.total_price}').grid(row=row+1, column=0)
 
     def charge(self):
-        try:
-            payment_type = self.payment_type
-        except AttributeError:
-            payment_type = 0
-
+        payment_type = self.payment_type
         if payment_type != 0:
             for i in self.list_of_labels:
                 for p in self.complete_products_data:
@@ -772,7 +769,7 @@ class FrontEnd:
     def add_student(self):
         self.remove_everything()
         self.return_button.destroy()
-        # Create 14 frames
+        # Create 16 frames
         self.frame1_add_student = Frame(root)
         self.frame2_add_student = Frame(root)
         self.frame3_add_student = Frame(root)
@@ -788,7 +785,8 @@ class FrontEnd:
         self.frame13_add_student = Frame(root)
         self.frame14_add_student = Frame(root)
         self.frame15_add_student = Frame(root)
-        # Place 15 frames
+        self.frame16_add_student = Frame(root)
+        # Place 16 frames
         counter = 0
         row = 0
         for i in root.winfo_children():
@@ -853,7 +851,12 @@ class FrontEnd:
         self.security_link_label.place(relheight=.4, relwidth=.9, relx=.05, rely=.5)
         self.security_link_entry = Entry(self.frame14_add_student)
         self.security_link_entry.place(relheight=.4, relwidth=.9, relx=.05, rely=.05)
-        self.register_user_information = Button(self.frame15_add_student, text='Registrar/Actualizar Informacion', command=self.register_user, font=('Times', 15))
+        self.payment_type = Listbox(self.frame15_add_student, height=3)
+        self.payment_type.bind('<<ListboxSelect>>', self.get_value2)
+        self.payment_type.place(relheight=.9, relwidth=.9, relx=.05, rely=.05)
+        for i in range(len(self.payment_types)):
+            self.payment_type.insert(i, self.payment_types[i])
+        self.register_user_information = Button(self.frame16_add_student, text='Registrar/Actualizar Informacion', command=self.register_user, font=('Times', 15))
         self.register_user_information.place(relheight=.8, relwidth=.9, rely=.1, relx=.05)
 
     def remove_user_information_interface(self):
@@ -864,7 +867,7 @@ class FrontEnd:
 
     def register_user(self):
         # Check if required entries are registered
-        if self.user_birthday_entry.get() == '' or self.user_name_entry.get() == '' or self.parent_phone_entry.get() == '':
+        if self.user_birthday_entry.get() == '' or self.user_name_entry.get() == '' or self.parent_phone_entry.get() == '' or self.payment_type == 0:
             # Check ID Entry and Full Name Entry for existing users
             if self.check_records(self.user_id_entry.get(), self.user_name_entry.get()) != 1:
                 # Create Label to present user with 'Fill in Required fields'
@@ -909,10 +912,47 @@ class FrontEnd:
             amount_of_hours = self.hours_of_access_entry.get()
             security_link = self.security_link_entry.get()
             counter = 0
+            counter2 = 0
             while counter < len(self.complete_students_data):
                 if user_id == self.complete_students_data[counter][0]:
+                    # New Payment Date
+                    if self.complete_students_data[counter][8] != inscription_date:
+                        # Date, payment type, quantity, payment type, description
+                        current_date = inscription_date
+                        payment_type = self.selected_payment_type
+                        income = amount_paid
+                        payment_type2 = 'Inscripcion'
+                        description = f'Inscripcion de {user_name}'
+                        ws = self.wb['Ingresos']
+                        ws.insert_rows(2)
+                        ws.cell(row=2, column=1, value=current_date)
+                        ws.cell(row=2, column=1, value=payment_type)
+                        ws.cell(row=2, column=1, value=income)
+                        ws.cell(row=2, column=1, value=payment_type2)
+                        ws.cell(row=2, column=1, value=description)
+                        self.wb.save('income_expenses.xlsx')
+                        self.wb = openpyxl.load_workbook('income_expenses.xlsx')
+                    elif self.complete_students_data[counter][9] != payment_date:
+                        current_date = payment_date
+                        payment_type = self.selected_payment_type
+                        income = amount_paid
+                        payment_type2 = 'Mensualidad'
+                        description = f'Mensualidad de {user_name}'
+                        ws = self.wb['Ingresos']
+                        ws.insert_rows(2)
+                        ws.cell(row=2, column=1, value=current_date)
+                        ws.cell(row=2, column=1, value=payment_type)
+                        ws.cell(row=2, column=1, value=income)
+                        ws.cell(row=2, column=1, value=payment_type2)
+                        ws.cell(row=2, column=1, value=description)
+                        self.wb.save('income_expenses.xlsx')
+                        self.wb = openpyxl.load_workbook('income_expenses.xlsx')
                     self.complete_students_data.pop(counter)
+                    counter2 = 1
                 counter += 1
+            if counter2 == 0 and (payment_date != '' or inscription_date != ''):
+                # First Payment
+                pass
             self.complete_students_data.append([user_id, user_name, birthday, parent_address, parent_telephone, parent_email, father_name, mother_name, inscription_date, payment_date, amount_paid, amount_of_hours, security_link])
             json.dump(self.complete_students_data, open('Students.txt', 'w'))
             # Create Frame for main grid
