@@ -347,7 +347,7 @@ class FrontEnd:
             if product in self.complete_products_data[i]:
                 self.complete_products_data[i][4] += int(self.add_inventory_entry.get())
                 json.dump(self.complete_products_data, open('products_information.txt', 'w'))
-                ws = wb['Egresos']
+                ws = self.wb['Egresos']
                 # Get data ready
                 current_date = datetime.now()
                 current_date = f'{current_date.day}/{current_date.month}/{current_date.year}'
@@ -430,9 +430,9 @@ class FrontEnd:
             current_date = datetime.now()
             current_date = f'{current_date.day}/{current_date.month}/{current_date.year}'
             payment_type = self.payment_type.get(self.payment_type.curselection())
-            total_price = int(self.cost_entry.get()) * int(self.add_inventory_entry.get())
+            total_price = int(self.cost_entry.get()) * int(self.current_inventory_entry.get())
             product = self.item_to_sell_entry.get()
-            quantity = self.add_inventory_entry.get()
+            quantity = self.current_inventory_entry.get()
             ws.insert_rows(2)
             ws.cell(row=2, column=1, value=current_date)
             ws.cell(row=2, column=2, value=payment_type)
