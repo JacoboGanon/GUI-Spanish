@@ -9,7 +9,6 @@ import json
 root = Tk()
 root.geometry('%dx%d' % (root.winfo_screenwidth(), root.winfo_screenheight()))
 
-
 # Main Loop
 class FrontEnd:
     def __init__(self):
@@ -925,10 +924,10 @@ class FrontEnd:
                         ws = self.wb['Ingresos']
                         ws.insert_rows(2)
                         ws.cell(row=2, column=1, value=current_date)
-                        ws.cell(row=2, column=1, value=payment_type)
-                        ws.cell(row=2, column=1, value=income)
-                        ws.cell(row=2, column=1, value=payment_type2)
-                        ws.cell(row=2, column=1, value=description)
+                        ws.cell(row=2, column=2, value=payment_type)
+                        ws.cell(row=2, column=3, value=income)
+                        ws.cell(row=2, column=4, value=payment_type2)
+                        ws.cell(row=2, column=5, value=description)
                         self.wb.save('income_expenses.xlsx')
                         self.wb = openpyxl.load_workbook('income_expenses.xlsx')
                     elif self.complete_students_data[counter][9] != payment_date:
@@ -940,10 +939,10 @@ class FrontEnd:
                         ws = self.wb['Ingresos']
                         ws.insert_rows(2)
                         ws.cell(row=2, column=1, value=current_date)
-                        ws.cell(row=2, column=1, value=payment_type)
-                        ws.cell(row=2, column=1, value=income)
-                        ws.cell(row=2, column=1, value=payment_type2)
-                        ws.cell(row=2, column=1, value=description)
+                        ws.cell(row=2, column=2, value=payment_type)
+                        ws.cell(row=2, column=3, value=income)
+                        ws.cell(row=2, column=4, value=payment_type2)
+                        ws.cell(row=2, column=5, value=description)
                         self.wb.save('income_expenses.xlsx')
                         self.wb = openpyxl.load_workbook('income_expenses.xlsx')
                     self.complete_students_data.pop(counter)
@@ -959,10 +958,10 @@ class FrontEnd:
                 ws = self.wb['Ingresos']
                 ws.insert_rows(2)
                 ws.cell(row=2, column=1, value=current_date)
-                ws.cell(row=2, column=1, value=payment_type)
-                ws.cell(row=2, column=1, value=income)
-                ws.cell(row=2, column=1, value=payment_type2)
-                ws.cell(row=2, column=1, value=description)
+                ws.cell(row=2, column=2, value=payment_type)
+                ws.cell(row=2, column=3, value=income)
+                ws.cell(row=2, column=4, value=payment_type2)
+                ws.cell(row=2, column=5, value=description)
                 self.wb.save('income_expenses.xlsx')
                 self.wb = openpyxl.load_workbook('income_expenses.xlsx')
             elif counter == 0 and inscription_date != '':
@@ -974,10 +973,10 @@ class FrontEnd:
                 ws = self.wb['Ingresos']
                 ws.insert_rows(2)
                 ws.cell(row=2, column=1, value=current_date)
-                ws.cell(row=2, column=1, value=payment_type)
-                ws.cell(row=2, column=1, value=income)
-                ws.cell(row=2, column=1, value=payment_type2)
-                ws.cell(row=2, column=1, value=description)
+                ws.cell(row=2, column=2, value=payment_type)
+                ws.cell(row=2, column=3, value=income)
+                ws.cell(row=2, column=4, value=payment_type2)
+                ws.cell(row=2, column=5, value=description)
                 self.wb.save('income_expenses.xlsx')
                 self.wb = openpyxl.load_workbook('income_expenses.xlsx')
             self.complete_students_data.append([user_id, user_name, birthday, parent_address, parent_telephone, parent_email, father_name, mother_name, inscription_date, payment_date, amount_paid, amount_of_hours, security_link])
