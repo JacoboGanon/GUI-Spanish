@@ -8,6 +8,14 @@ import json
 # Create Window
 root = Tk()
 root.geometry('%dx%d' % (root.winfo_screenwidth(), root.winfo_screenheight()))
+wb = openpyxl.load_workbook('income_expenses.xlsx')
+ws = wb['Ingresos']
+ws.cell(row=1, column=1, value='Fecha')
+ws.cell(row=1, column=2, value='Tipo de Pago')
+ws.cell(row=1, column=3, value='Cantidad ($)')
+ws.cell(row=1, column=4, value='Tipo de Pago')
+ws.cell(row=1, column=5, value='Descripcion')
+wb.save('income_expenses.xlsx')
 
 # Main Loop
 class FrontEnd:
