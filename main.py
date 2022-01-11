@@ -8,9 +8,7 @@ import json
 # Create Window
 root = Tk()
 root.geometry('%dx%d' % (root.winfo_screenwidth(), root.winfo_screenheight()))
-wb = openpyxl.load_workbook('income_expenses.xlsx')
 
-ws = wb['Egresos']
 # Main Loop
 class FrontEnd:
     def __init__(self):
@@ -18,6 +16,8 @@ class FrontEnd:
         self.defaultFont = font.nametofont("TkDefaultFont")
         # Create 3 payment types
         self.payment_types = ('Tarjeta', 'Efectivo', 'Transferencia')
+        # Open Workbook
+        self.wb = openpyxl.load_workbook('income_expenses.xlsx')
 
         # Overriding default-font with custom settings
         # i.e changing font-family, size and weight
@@ -348,13 +348,21 @@ class FrontEnd:
                 self.complete_products_data[i][4] += int(self.add_inventory_entry.get())
                 json.dump(self.complete_products_data, open('products_information.txt', 'w'))
                 ws = wb['Egresos']
-                # Put date, payment type, total price, product, quantity
+                # Get data ready
                 current_date = datetime.now()
                 current_date = f'{current_date.day}/{current_date.month}/{current_date.year}'
                 payment_type = self.payment_type.get(self.payment_type.curselection())
                 total_price = self.complete_products_data[i][5] * int(self.add_inventory_entry.get())
                 product = self.complete_products_data[i][1]
                 quantity = self.add_inventory_entry.get()
+                ws.insert_rows(2)
+                ws.cell(row=2, column=1, value=current_date)
+                ws.cell(row=2, column=2, value=payment_type)
+                ws.cell(row=2, column=3, value=total_price)
+                ws.cell(row=2, column=4, value=product)
+                ws.cell(row=2, column=5, value=quantity)
+                self.wb.save('income_expenses.xlsx')
+                self.wb = openpyxl.load_workbook('income_expenses.xlsx')
 
     def add_product_to_sell(self):
         self.remove_everything()
@@ -418,6 +426,21 @@ class FrontEnd:
         if temp_data not in self.complete_products_data:
             self.complete_products_data.append(temp_data)
             json.dump(self.complete_products_data, open('products_information.txt', 'w'))
+            ws = self.wb['Egresos']
+            current_date = datetime.now()
+            current_date = f'{current_date.day}/{current_date.month}/{current_date.year}'
+            payment_type = self.payment_type.get(self.payment_type.curselection())
+            total_price = int(self.cost_entry.get()) * int(self.add_inventory_entry.get())
+            product = self.item_to_sell_entry.get()
+            quantity = self.add_inventory_entry.get()
+            ws.insert_rows(2)
+            ws.cell(row=2, column=1, value=current_date)
+            ws.cell(row=2, column=2, value=payment_type)
+            ws.cell(row=2, column=3, value=total_price)
+            ws.cell(row=2, column=4, value=product)
+            ws.cell(row=2, column=5, value=quantity)
+            self.wb.save('income_expenses.xlsx')
+            self.wb = openpyxl.load_workbook('income_expenses.xlsx')
 
     def add_class_to_sell(self):
         self.remove_everything()
