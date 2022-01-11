@@ -208,6 +208,22 @@ class FrontEnd:
         self.admin_mode.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
         self.seller_mode = Button(self.frame2_sell, text="Vender", command=self.sell_mode, bg=self.ORANGE, fg=self.WHITE)
         self.seller_mode.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
+        # Remove 'Egresos'
+        try:
+            self.category_entry.destroy()
+            self.category_label.destroy()
+            self.description_entry.destroy()
+            self.description_label.destroy()
+            self.amount_paid_entry.destroy()
+            self.amount_paid_label.destroy()
+            self.payment_type.destroy()
+            self.register_expense.destroy()
+            self.frame3_admin_page.destroy()
+            self.frame4_admin_page.destroy()
+            self.frame5_admin_page.destroy()
+            self.frame6_admin_page.destroy()
+        except AttributeError:
+            pass
 
     def admin_ask_password(self):
         self.remove_everything()
