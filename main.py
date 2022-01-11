@@ -826,20 +826,18 @@ class FrontEnd:
             json.dump(self.complete_students_data, open('Students.txt', 'w'))
             # Create Frame for main grid
             self.frame16_add_student = Frame(root, bg='#9fb5b7')
-            self.frame16_add_student.place(rely=.35, relx=.1, relheight=.6, relwidth=.8)
+            self.frame16_add_student.place(rely=.35, relx=.05, relheight=.6, relwidth=.9)
             # Create Grid
-            Label(self.frame16_add_student, text='Dia', bg='#9fb5b7', font=('Times', 20)).grid(row=1, column=0, padx=50, pady=35)
-            Label(self.frame16_add_student, text='Nivel', bg='#9fb5b7', font=('Times', 20)).grid(row=2, column=0, padx=50, pady=35)
-            Label(self.frame16_add_student, text='Horario', bg='#9fb5b7', font=('Times', 20)).grid(row=3, column=0, padx=50, pady=35)
-            Label(self.frame16_add_student, text='Profesor', bg='#9fb5b7', font=('Times', 20)).grid(row=4, column=0, padx=50, pady=35)
-            Label(self.frame16_add_student, text='Cupo', bg='#9fb5b7', font=('Times', 20)).grid(row=5, column=0, padx=50, pady=35)
+            Label(self.frame16_add_student, text='Dia', bg='#9fb5b7', font=('Times', 20)).grid(row=1, column=0, padx=20, pady=35)
+            Label(self.frame16_add_student, text='Nivel', bg='#9fb5b7', font=('Times', 20)).grid(row=2, column=0, padx=20, pady=35)
+            Label(self.frame16_add_student, text='Horario', bg='#9fb5b7', font=('Times', 20)).grid(row=3, column=0, padx=20, pady=35)
+            Label(self.frame16_add_student, text='Profesor', bg='#9fb5b7', font=('Times', 20)).grid(row=4, column=0, padx=20, pady=35)
+            Label(self.frame16_add_student, text='Cupo', bg='#9fb5b7', font=('Times', 20)).grid(row=5, column=0, padx=20, pady=35)
             column = 1
             day_of_week = ('L', 'M', 'M', 'J', 'V')
             for i in self.complete_classes_data:
-                list_to_tuple = []
-
                 # Create list of activities
-                Label(self.frame16_add_student, text=i[0], bg='#9fb5b7', font=('Times', 20)).grid(row=0, column=column, padx=50, pady=20)
+                Label(self.frame16_add_student, text=i[0], bg='#9fb5b7', font=('Times', 20)).grid(row=0, column=column, padx=20, pady=20)
                 temp_frame = Frame(self.frame16_add_student, bg='#9fb5b7')
 
                 # Create Checkboxes
@@ -850,17 +848,20 @@ class FrontEnd:
 
                 # Create Listbox for levels
                 temp_listbox = Listbox(self.frame16_add_student, height=3)
-                temp_listbox.bind('<<ListboxSelect>>', self.listbox_value)
+                temp_listbox.bind('<<ListboxSelect>>', lambda event, a=column: self.listbox_value(a))
                 for p in i[1].split(', '):
                     temp_listbox.insert(counter, p)
                     counter += 1
                 temp_listbox.grid(row=2, column=column, padx=10, pady=10)
 
                 # Make Time Suggestions based on level and activity
-                temp_combo_box = Combobox(self.frame16_add_student)
-                temp_combo_box.grid(row=3, column=column, padx=50, pady=35)
+                temp_combo_box = Combobox(self.frame16_add_student, font=('Times', 20))
+                temp_combo_box.grid(row=3, column=column, padx=20, pady=35)
 
-                temp_combo_box['values'] = tuple(list_to_tuple)
+                # Professor Listbox
+                temp_entry = Entry(self.frame16_add_student, font=('Times', 20))
+                temp_entry.bind('<Return>', lambda event, a=column: self.get_seats(a))
+                temp_entry.grid(row=4, column=column)
 
                 # Next Column
                 column += 1
@@ -987,21 +988,61 @@ class FrontEnd:
                         c = 0
                         r += 1
 
-    def listbox_value(self, _):
-        for i in self.frame16_add_student.grid_slaves(row=2):
-            if i != self.frame16_add_student.grid_slaves(row=2)[2]:
-                list_of_levels = list(i.get(0, END))
-                levels_as_string = str(list_of_levels[0])
-                for p in range(1, len(list_of_levels)):
-                    levels_as_string += ', ' + str(list_of_levels[p])
-                for p in range(len(self.complete_classes_data)):
-                    if self.complete_classes_data[p][1] == levels_as_string:
-                        try:
-                            current_selection = i.get(i.curselection())
-                        except:
-                            pass
+    def listbox_value(self, column):
+        try:
+            list_to_tuple = []
+            for i in self.frame16_add_student.winfo_children():
+                if i in self.frame16_add_student.grid_slaves(row=2, column=column):
+                    self.last_selection = i.get(i.curselection())
+            for x in self.frame16_add_student.winfo_children():
+                if x in self.frame16_add_student.grid_slaves(row=0, column=column):
+                    for i in self.complete_classes_data:
+                        if x.cget('text') == i[0]:
+                            for p in range(2, len(i)):
+                                print(self.last_selection, i[p])
+                                if self.last_selection in i[p][0]:
+                                    list_to_tuple.append(i[p][2])
 
-        return current_selection
+            for i in self.frame16_add_student.winfo_children():
+                if i in self.frame16_add_student.grid_slaves(row=3, column=column):
+                    i['values'] = tuple(list_to_tuple)
+        except:
+            pass
+
+    def get_seats(self, column):
+        days_of_week = ('Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes')
+        for i in self.frame16_add_student.winfo_children():
+            if i in self.frame16_add_student.grid_slaves(row=0, column=column):
+                activity = i.cget('text')
+            if i in self.frame16_add_student.grid_slaves(row=1, column=column):
+                day_list = [p.instate(['selected']) for p in i.winfo_children()]
+                day_items = [p for p in i.winfo_children()]
+            if i in self.frame16_add_student.grid_slaves(row=2, column=column):
+                level = self.last_selection
+            if i in self.frame16_add_student.grid_slaves(row=3, column=column):
+                times = []
+                time = i.get()
+                start_time, end_time = time.split('-')
+                start_hour, start_minute = start_time.split(':')
+                end_hour, end_minute = end_time.split(':')
+                start_hour, start_minute, end_hour, end_minute = int(start_hour), int(start_minute), int(end_hour), int(end_minute)
+                if start_hour + 1 == end_hour:
+                    times.append(f'{start_hour}:{start_minute}-{start_hour+1}{start_minute}')
+                else:
+                    while start_hour != end_hour:
+                        times.append(f'{start_hour}:{start_minute}-{start_hour+1}{start_minute}')
+                        start_hour += 1
+
+            if i in self.frame16_add_student.grid_slaves(row=4, column=column):
+                teacher = i.get()
+        print(times)
+        for i in self.complete_classes_data:
+            if activity == i[0]:
+                for x in range(len(day_list)):
+                    if day_list[x]:
+                        for p in range(2, len(i)):
+                            if activity in i[p] and level in i[p] and time in i[p] and teacher in i[p] and days_of_week[x] in i[p]:
+                                pass
 
 
 if __name__ == '__main__':
