@@ -863,8 +863,13 @@ class FrontEnd:
                 temp_entry.bind('<Return>', lambda event, a=column: self.get_seats(a))
                 temp_entry.grid(row=4, column=column)
 
+                # Create seats available
+                Label(self.frame16_add_student, text='0', bg='#9fb5b7').grid(row=5, column=column)
+
                 # Next Column
                 column += 1
+
+            # Create
 
     def check_records(self, user_id, user_name):
         # Check if there is an ID and name
@@ -999,7 +1004,6 @@ class FrontEnd:
                     for i in self.complete_classes_data:
                         if x.cget('text') == i[0]:
                             for p in range(2, len(i)):
-                                print(self.last_selection, i[p])
                                 if self.last_selection in i[p][0]:
                                     list_to_tuple.append(i[p][2])
 
@@ -1016,7 +1020,6 @@ class FrontEnd:
                 activity = i.cget('text')
             if i in self.frame16_add_student.grid_slaves(row=1, column=column):
                 day_list = [p.instate(['selected']) for p in i.winfo_children()]
-                day_items = [p for p in i.winfo_children()]
             if i in self.frame16_add_student.grid_slaves(row=2, column=column):
                 level = self.last_selection
             if i in self.frame16_add_student.grid_slaves(row=3, column=column):
@@ -1025,24 +1028,26 @@ class FrontEnd:
                 start_time, end_time = time.split('-')
                 start_hour, start_minute = start_time.split(':')
                 end_hour, end_minute = end_time.split(':')
-                start_hour, start_minute, end_hour, end_minute = int(start_hour), int(start_minute), int(end_hour), int(end_minute)
+                start_hour, end_hour = int(start_hour), int(end_hour)
                 if start_hour + 1 == end_hour:
-                    times.append(f'{start_hour}:{start_minute}-{start_hour+1}{start_minute}')
+                    times.append(f'{start_hour}:{start_minute}-{start_hour+1}:{start_minute}')
                 else:
                     while start_hour != end_hour:
-                        times.append(f'{start_hour}:{start_minute}-{start_hour+1}{start_minute}')
+                        times.append(f'{start_hour}:{start_minute}-{start_hour+1}:{start_minute}')
                         start_hour += 1
 
             if i in self.frame16_add_student.grid_slaves(row=4, column=column):
                 teacher = i.get()
-        print(times)
+
         for i in self.complete_classes_data:
             if activity == i[0]:
                 for x in range(len(day_list)):
-                    if day_list[x]:
-                        for p in range(2, len(i)):
-                            if activity in i[p] and level in i[p] and time in i[p] and teacher in i[p] and days_of_week[x] in i[p]:
-                                pass
+                    for y in times:
+                        if day_list[x]:
+                            for p in range(2, len(i)):
+                                if level in i[p][0] and teacher in i[p] and days_of_week[x] in i[p] and y in i[p][2]:
+                                    print('Hello World!')
+                                    Label(self.frame16_add_student, text=i[p][4], bg='#9fb5b7').grid(row=5, column=column, padx=30)
 
 
 if __name__ == '__main__':
