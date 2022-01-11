@@ -8,7 +8,8 @@ import json
 # Create Window
 root = Tk()
 root.geometry('%dx%d' % (root.winfo_screenwidth(), root.winfo_screenheight()))
-wb = openpyxl.Workbook
+wb = openpyxl.load_workbook('income_expenses.xlsx')
+
 
 # Main Loop
 class FrontEnd:
@@ -1127,3 +1128,4 @@ if __name__ == '__main__':
     front = FrontEnd()
     front.sell_mode()
     root.mainloop()
+    wb.save('income_expenses.xlsx')
