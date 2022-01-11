@@ -2,7 +2,7 @@
 from tkinter import Tk, Label, Frame, Entry, Button, font, Listbox, messagebox, END, IntVar
 from tkinter.ttk import Combobox, Checkbutton
 import openpyxl
-import os
+from datetime import datetime
 import json
 
 # Create Window
@@ -10,12 +10,14 @@ root = Tk()
 root.geometry('%dx%d' % (root.winfo_screenwidth(), root.winfo_screenheight()))
 wb = openpyxl.load_workbook('income_expenses.xlsx')
 
-
+ws = wb['Egresos']
 # Main Loop
 class FrontEnd:
     def __init__(self):
         # Set default font
         self.defaultFont = font.nametofont("TkDefaultFont")
+        # Create 3 payment types
+        self.payment_types = ('Tarjeta', 'Efectivo', 'Transferencia')
 
         # Overriding default-font with custom settings
         # i.e changing font-family, size and weight
@@ -161,6 +163,7 @@ class FrontEnd:
             self.frame7_admin_page.destroy()
             self.frame8_admin_page.destroy()
             self.frame9_admin_page.destroy()
+            self.frame10_admin_page.destroy()
         except AttributeError:
             pass
         # Remove 'Añadir Inverntario'
@@ -172,6 +175,8 @@ class FrontEnd:
             self.frame3_admin_page.destroy()
             self.frame4_admin_page.destroy()
             self.frame5_admin_page.destroy()
+            self.frame6_admin_page.destroy()
+            self.frame7_admin_page.destroy()
         except AttributeError:
             pass
         # Remove 'Quitar Producto'
@@ -310,6 +315,8 @@ class FrontEnd:
         self.frame5_admin_page.place(relx=self.width4_3 - .075, rely=self.height3_2 - .05, relwidth=.2, relheight=.1)
         self.frame6_admin_page = Frame(root, bg=self.GREY)
         self.frame6_admin_page.place(relx=self.width4_4 - .025, rely=self.height3_2 - .05, relwidth=.2, relheight=.1)
+        self.frame7_admin_page = Frame(root, bg=self.GREY)
+        self.frame7_admin_page.place(relx=self.width1_1-.15, rely=self.height3_3-.04, relwidth=.3, relheight=.08)
         # Listbox of products and button
         self.listbox_of_products_id = Listbox(self.frame3_admin_page)
         self.listbox_of_products = Listbox(self.frame4_admin_page)
@@ -324,7 +331,11 @@ class FrontEnd:
         self.add_inventory_entry.place(relx=0.05, rely=.05, relwidth=0.9, relheight=0.4)
         self.add_inventory_label = Label(self.frame5_admin_page, text='Cantidad', fg=self.WHITE)
         self.add_inventory_label.place(relx=.05, rely=.5, relwidth=0.9, relheight=0.4)
-        self.add_inventory_button = Button(self.frame6_admin_page, text="Registrar Inventario", command=self.register_inventory, bg=self.ORANGE, fg=self.WHITE)
+        self.payment_type = Listbox(self.frame6_admin_page, height=3)
+        self.payment_type.place(relx=.05, rely=.1, relheight=.8, relwidth=.9)
+        for i in range(len(self.payment_types)):
+            self.payment_type.insert(i, self.payment_types[i])
+        self.add_inventory_button = Button(self.frame7_admin_page, text="Registrar Inventario", command=self.register_inventory, bg=self.ORANGE, fg=self.WHITE)
         self.add_inventory_button.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
 
     def register_inventory(self):
@@ -336,6 +347,14 @@ class FrontEnd:
             if product in self.complete_products_data[i]:
                 self.complete_products_data[i][4] += int(self.add_inventory_entry.get())
                 json.dump(self.complete_products_data, open('products_information.txt', 'w'))
+                ws = wb['Egresos']
+                # Put date, payment type, total price, product, quantity
+                current_date = datetime.now()
+                current_date = f'{current_date.day}/{current_date.month}/{current_date.year}'
+                payment_type = self.payment_type.get(self.payment_type.curselection())
+                total_price = self.complete_products_data[i][5] * int(self.add_inventory_entry.get())
+                product = self.complete_products_data[i][1]
+                quantity = self.add_inventory_entry.get()
 
     def add_product_to_sell(self):
         self.remove_everything()
@@ -357,7 +376,9 @@ class FrontEnd:
         self.frame8_admin_page = Frame(root, bg=self.GREY)
         self.frame8_admin_page.place(relx=self.width3_3 - 0.1, rely=self.height4_3 - 0.05, relwidth=0.2, relheight=.1)
         self.frame9_admin_page = Frame(root, bg=self.GREY)
-        self.frame9_admin_page.place(relx=self.width3_2 - 0.15, rely=self.height4_4 - 0.03, relwidth=0.3, relheight=.06)
+        self.frame9_admin_page.place(relx=self.width2_1 - 0.15, rely=self.height4_4 - 0.05, relwidth=0.3, relheight=.1)
+        self.frame10_admin_page = Frame(root, bg=self.GREY)
+        self.frame10_admin_page.place(relx=self.width2_2-.15, rely=self.height4_4-.05, relwidth=.3, relheight=.1)
 
         # Information Widgets
         self.item_id_label = Label(self.frame3_admin_page, bg=self.GREY, fg=self.WHITE, text="Codigo de Producto")
@@ -384,8 +405,12 @@ class FrontEnd:
         self.cost_entry.place(relx=0.15, rely=0.08, relwidth=0.7, relheight=0.3)
         self.cost_label = Label(self.frame8_admin_page, bg=self.GREY, fg=self.WHITE, text='Costo de Producto')
         self.cost_label.place(relx=0.15, rely=0.5, relwidth=0.7, relheight=0.3)
+        self.payment_type = Listbox(self.frame9_admin_page, height=3)
+        self.payment_type.place(relx=.05, rely=.1, relheight=.8, relwidth=.9)
+        for i in range(len(self.payment_types)):
+            self.payment_type.insert(i, self.payment_types[i])
         # Register Widget
-        self.register_button = Button(self.frame9_admin_page, text="Registrar Producto", bg=self.ORANGE, fg=self.WHITE, command=self.update_products_information)
+        self.register_button = Button(self.frame10_admin_page, text="Registrar Producto", bg=self.ORANGE, fg=self.WHITE, command=self.update_products_information)
         self.register_button.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
 
     def update_products_information(self):
