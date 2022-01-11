@@ -8,14 +8,7 @@ import json
 # Create Window
 root = Tk()
 root.geometry('%dx%d' % (root.winfo_screenwidth(), root.winfo_screenheight()))
-wb = openpyxl.load_workbook('income_expenses.xlsx')
-ws = wb['Ingresos']
-ws.cell(row=1, column=1, value='Fecha')
-ws.cell(row=1, column=2, value='Tipo de Pago')
-ws.cell(row=1, column=3, value='Cantidad ($)')
-ws.cell(row=1, column=4, value='Tipo de Pago')
-ws.cell(row=1, column=5, value='Descripcion')
-wb.save('income_expenses.xlsx')
+
 
 # Main Loop
 class FrontEnd:
@@ -605,11 +598,11 @@ class FrontEnd:
         self.register_products_frame = Frame(root)
         self.divide_frame = Frame(root, bg=self.GREY)
         self.products_frame = Frame(root)
-        self.register_products_frame.place(relx=0, rely=0.06, relwidth=0.2, relheight=0.94)
+        self.register_products_frame.place(relx=0, rely=0.16, relwidth=0.2, relheight=0.84)
         self.divide_frame.place(relx=0.2, rely=0, relwidth=.04, relheight=1)
         self.products_frame.place(relx=0.24, rely=0, relwidth=0.76, relheight=1)
         self.buttons_frame = Frame(root)
-        self.buttons_frame.place(relx=0, rely=0, relwidth=.2, relheight=0.06)
+        self.buttons_frame.place(relx=0, rely=0, relwidth=.2, relheight=0.16)
         # Create return button
         self.return_button = Button(self.buttons_frame, text="Regresar", command=self.clear_sell, bg=self.ORANGE, fg=self.WHITE)
         self.return_button.grid(row=0, column=0, padx=5, pady=5)
@@ -617,6 +610,11 @@ class FrontEnd:
         self.charge_button.grid(row=0, column=1, padx=5, pady=5)
         self.clear_button = Button(self.buttons_frame, text="Vaciar", command=self.clear, bg=self.ORANGE, fg=self.WHITE)
         self.clear_button.grid(row=0, column=2, padx=5, pady=5)
+        self.payment_type = Listbox(self.buttons_frame, width=15, height=3)
+        self.payment_type.bind('<<ListboxSelect>>', self.get_value2)
+        self.payment_type.grid(row=1, column=0, padx=5, pady=5, columnspan=3)
+        for i in range(len(self.payment_types)):
+            self.payment_type.insert(i, self.payment_types[i])
         # Row and column
         counter = 0
         row = 0
@@ -651,10 +649,7 @@ class FrontEnd:
         self.total_price = 0
         price = 0
         for i in self.register_products_frame.winfo_children():
-            if i['text'] == 'Regresar' or i['text'] == 'Cobrar':
-                pass
-            else:
-                i.destroy()
+            i.destroy()
 
         for i in self.list_of_labels:
             if i[1] == 0:
@@ -709,19 +704,57 @@ class FrontEnd:
         Label(self.register_products_frame, text=f'Total: {self.total_price}').grid(row=row+1, column=0)
 
     def charge(self):
-        for i in self.list_of_labels:
-            for p in self.complete_products_data:
-                if i[0] == p[1]:
-                    p[4] -= i[1]
-        for i in self.register_products_frame.winfo_children():
-            if 'Total' not in i['text']:
-                i.destroy()
-            self.list_of_labels.clear()
+        try:
+            payment_type = self.payment_type
+        except AttributeError:
+            payment_type = 0
+
+        if payment_type != 0:
+            for i in self.list_of_labels:
+                for p in self.complete_products_data:
+                    if i[0] == p[1]:
+                        p[4] -= i[1]
+                        json.dump(self.complete_products_data, open('products_information.txt', 'w'))
+            for i in self.register_products_frame.winfo_children():
+                if 'Total' not in i['text']:
+                    i.destroy()
+                else:
+                    # Date, payment type, income, products, quantity
+                    current_date = datetime.now()
+                    current_date = f'{current_date.day}/{current_date.month}/{current_date.year}'
+                    payment_type = self.selected_payment_type
+                    total = i['text']
+                    total = total.replace('Total: ', '')
+                    products = []
+                    quantities = []
+                    products_string = ''
+                    quantities_string = ''
+                    for p in self.list_of_labels:
+                        products.append(p[0])
+                        quantities.append(p[1])
+
+                    products_string += products[0]
+                    quantities_string += quantities[0]
+                    for p in range(1, len(products)):
+                        products_string += ', ' + products[p]
+                        quantities_string += ', ' + quantities[p]
+                    ws = self.wb['Ingresos']
+                    ws.insert_rows(2)
+                    ws.cell(row=2, column=1, value=current_date)
+                    ws.cell(row=2, column=2, value=payment_type)
+                    ws.cell(row=2, column=3, value=total)
+                    ws.cell(row=2, column=4, value=products_string)
+                    ws.cell(row=2, column=5, value=quantities_string)
+                    self.wb.save('income_expenses.xlsx')
+                    self.wb = openpyxl.load_workbook('income_expenses.xlsx')
+                self.list_of_labels.clear()
+                self.payment_type = 0
 
     def clear(self):
         for i in self.register_products_frame.winfo_children():
             i.destroy()
             self.list_of_labels.clear()
+            self.payment_type = 0
 
     def classes(self):
         self.remove_everything()
@@ -1031,15 +1064,15 @@ class FrontEnd:
         self.remove_everything()
 
     # Gray out Text
-    def focus_in(self, _):
+    def focus_in(self, event):
         self.time_schedule_entry.delete(0, END)
         self.time_schedule_entry.config(fg='black')
 
-    def focus_in1(self, _):
+    def focus_in1(self, event):
         self.add_levels_entry.delete(0, END)
         self.add_levels_entry.config(fg='black')
 
-    def get_value(self, _):
+    def get_value(self, event):
         self.listbox_selection = self.list_of_activities.get()
         r = 0
         c = 0
@@ -1051,12 +1084,19 @@ class FrontEnd:
                     if c == 3:
                         c = 0
                         r += 1
+
     def get_value1(self, column):
         try:
             if column == 0:
                 self.last_product = self.listbox_of_products_id.get(self.listbox_of_products_id.curselection())
             if column == 1:
                 self.last_product = self.listbox_of_products.get(self.listbox_of_products.curselection())
+        except:
+            pass
+
+    def get_value2(self, event):
+        try:
+            self.selected_payment_type = self.payment_type.get(self.payment_type.curselection())
         except:
             pass
 
@@ -1191,4 +1231,3 @@ if __name__ == '__main__':
     front = FrontEnd()
     front.sell_mode()
     root.mainloop()
-    wb.save('income_expenses.xlsx')
