@@ -1,5 +1,5 @@
 # Imports
-from tkinter import Tk, Label, Frame, Entry, Button, font, Listbox, messagebox, END, IntVar
+from tkinter import Tk, Label, Frame, Entry, Button, font, Listbox, messagebox, END
 from tkinter.ttk import Combobox, Checkbutton
 import openpyxl
 from datetime import datetime
@@ -7,6 +7,7 @@ import json
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from PIL import Image, ImageTk
 
 # Create Window
 root = Tk()
@@ -15,6 +16,20 @@ root.geometry('%dx%d' % (root.winfo_screenwidth(), root.winfo_screenheight()))
 # Main Loop
 class FrontEnd:
     def __init__(self):
+        self.days_per_month = {
+            1: 31,
+            2: 28,
+            3: 31,
+            4: 30,
+            5: 31,
+            6: 30,
+            7: 31,
+            8: 31,
+            9: 30,
+            10: 31,
+            11: 30,
+            12: 31
+        }
         # Set default font
         self.defaultFont = font.nametofont("TkDefaultFont")
         # Create 3 payment types
@@ -49,6 +64,11 @@ class FrontEnd:
         self.width4_2 = .4
         self.width4_3 = .6
         self.width4_4 = .8
+
+        # Load image
+        self.image = (Image.open('messages.png'))
+        self.image = self.image.resize((55, 55), Image.ANTIALIAS)
+        self.image = ImageTk.PhotoImage(self.image)
 
         # Colors
         self.WHITE = '#242B2E'
@@ -87,31 +107,59 @@ class FrontEnd:
             counter = 0
             inscription_date = i[8]
             monthly_payment = i[9]
-            current_day = datetime.now()
-            one_year_day = current_day.strftime('%d/%m/%y')
-            one_year_day = one_year_day.replace(str(current_day.year)[-2:], str(current_day.year - 1)[-2:])
-            alternative_day = datetime.now()
-            alternative_day_one_year = f'{alternative_day.strftime("%d")}/{alternative_day.strftime("%m")}/{alternative_day.year - 1}'
-            one_month_day = f'{current_day.strftime("%d")}/{current_day.month - 1 if current_day.month != 1 else 12}/{current_day.strftime("%y") if current_day.month != 1 else str(current_day.year).replace(str(current_day.year), str(current_day.year-1)[-2])}'
-            alternative_day_one_month = f'{current_day.strftime("%d")}/{current_day.month - 1 if current_day.month != 1 else 12}/{current_day.year if current_day.month != 1 else current_day.year - 1}'
-            monthly_payment = monthly_payment.replace(monthly_payment[3: 5], str(int(monthly_payment[3:5])))
+            current_date = datetime.now()
+            inscription_day = int(inscription_date[0:2])
+            inscription_month = int(inscription_date[3:5])
+            inscription_year = int(inscription_date[6:])
+            monthly_payment_day = int(monthly_payment[0:2])
+            monthly_payment_month = int(monthly_payment[3:5])
+            monthly_payment_year = int(monthly_payment[6:])
+            # Prepare variables for comparisons
+            if inscription_year < 2000:
+                inscription_year += 2000
+            if monthly_payment_year < 2000:
+                monthly_payment_year += 2000
 
             # Check Inscription Date
-            if inscription_date == one_year_day or inscription_date == alternative_day_one_year:
-                for p in self.checked_students:
-                    # Check if it is from the past
-                    try:
-                        if p[0] == i[0]:
-                            counter = 1
-                    except IndexError:
-                        pass
-                # If it is not from the past append it
-                if counter == 0:
-                    self.checked_students.append([i[0], i[1], i[8], 'Inscripcion'])
-                    ready_for_email.append([i[0], i[1], i[8], 'Inscripcion'])
+            if inscription_year < current_date.year:
+                if inscription_year < current_date.year - 1:
+                    inscription_month = 0
+                    inscription_day = 0
+                if inscription_month <= current_date.month:
+                    if inscription_month < current_date.month:
+                        inscription_day = 0
+                    if inscription_day <= current_date.day:
+                        for p in self.checked_students:
+                            # Check if it is from the past
+                            try:
+                                if p[0] == i[0]:
+                                    counter = 1
+                            except IndexError:
+                                pass
+                        # If it is not from the past append it
+                        if counter == 0:
+                            self.checked_students.append([i[0], i[1], i[8], 'Inscripcion'])
+                            ready_for_email.append([i[0], i[1], i[8], 'Inscripcion'])
 
             # Check Monthly Payment
-            if monthly_payment == one_month_day or monthly_payment == alternative_day_one_month:
+            if monthly_payment_year < current_date.year:
+                if current_date.month == 1:
+                    if monthly_payment_month == 12 and monthly_payment_day < current_date.day:
+                        monthly_payment_month = 0
+                        monthly_payment_day = 0
+                    elif monthly_payment_month != 12:
+                        monthly_payment_month = 0
+                        monthly_payment_day = 0
+                    else:
+                        monthly_payment_month = 100
+                else:
+                    monthly_payment_day = 0
+                    monthly_payment_month = 0
+            if monthly_payment_month < current_date.month - 1:
+                monthly_payment_day = 0
+
+            if monthly_payment_month < current_date.month and monthly_payment_day < current_date.day:
+                print('Hello World! Monthly')
                 for p in self.checked_students:
                     # Check if it is from the past
                     try:
@@ -138,7 +186,8 @@ class FrontEnd:
             if message != '':
                 email = 'flicflac410@gmail.com'
                 password = '231483a.H8243'
-                send_to_emails = ['flicflac410@gmail.com']
+                # send_to_emails = ['yaelganonm@gmail.com', 'flicflacgimnasia@gmail.com']
+                send_to_emails = []
                 subject = 'Flic Flac Records'
                 server = smtplib.SMTP('smtp.gmail.com', 587)
                 server.starttls()
@@ -163,6 +212,7 @@ class FrontEnd:
             self.class_frame2.destroy()
         except AttributeError:
             pass
+
         # Remove 'Añadir clase, clase'
         try:
             self.list_of_activities.destroy()
@@ -182,6 +232,7 @@ class FrontEnd:
             self.frame7_class_page.destroy()
         except AttributeError:
             pass
+
         # Remove 'Añadir Actividad'
         try:
             self.add_activity_button.destroy()
@@ -193,6 +244,7 @@ class FrontEnd:
             self.frame3_activity_page.destroy()
         except AttributeError:
             pass
+
         # Remove 'Añadir clase'
         try:
             self.activity_button.destroy()
@@ -201,6 +253,7 @@ class FrontEnd:
             self.frame4_admin_page.destroy()
         except AttributeError:
             pass
+
         # Remove Sell
         try:
             self.class_button.destroy()
@@ -209,6 +262,7 @@ class FrontEnd:
             self.frame2_seller.destroy()
         except AttributeError:
             pass
+
         # Remove self
         try:
             self.admin_mode.destroy()
@@ -217,6 +271,7 @@ class FrontEnd:
             self.frame2_sell.destroy()
         except AttributeError:
             pass
+
         # Remove Admin password
         try:
             self.password_entry.destroy()
@@ -225,6 +280,7 @@ class FrontEnd:
             self.frame2_admin_password.destroy()
         except AttributeError:
             pass
+
         # Remove 'Productos'
         try:
             self.item_id_label.destroy()
@@ -250,6 +306,7 @@ class FrontEnd:
             self.frame10_admin_page.destroy()
         except AttributeError:
             pass
+
         # Remove 'Añadir Inverntario'
         try:
 
@@ -263,12 +320,30 @@ class FrontEnd:
             self.frame7_admin_page.destroy()
         except AttributeError:
             pass
+
         # Remove 'Quitar Producto'
         try:
             self.listbox_of_products_id.destroy()
             self.remove_product_button.destroy()
             self.frame3_admin_page.destroy()
             self.frame4_admin_page.destroy()
+        except AttributeError:
+            pass
+
+        # Remove 'Egresos'
+        try:
+            self.category_entry.destroy()
+            self.category_label.destroy()
+            self.description_entry.destroy()
+            self.description_label.destroy()
+            self.amount_paid_entry.destroy()
+            self.amount_paid_label.destroy()
+            self.payment_type.destroy()
+            self.register_expense.destroy()
+            self.frame3_admin_page.destroy()
+            self.frame4_admin_page.destroy()
+            self.frame5_admin_page.destroy()
+            self.frame6_admin_page.destroy()
         except AttributeError:
             pass
 
@@ -287,26 +362,19 @@ class FrontEnd:
         self.frame1_sell.place(relx=self.width2_1 - .15, rely=self.height1_1 - .04, relwidth=.3, relheight=.08)
         self.frame2_sell = Frame(root, bg=self.GREY)
         self.frame2_sell.place(relx=self.width2_2 - .15, rely=self.height1_1 - .04, relwidth=.3, relheight=.08)
+        self.frame3_sell = Frame(root)
+        self.frame3_sell.place(relx=.965, rely=0, relwidth=.035, relheight=.05)
+
+        # Put 2 modes and image print()
         self.admin_mode = Button(self.frame1_sell, text="Administrar", command=self.admin_ask_password, bg=self.ORANGE, fg=self.WHITE)
         self.admin_mode.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
         self.seller_mode = Button(self.frame2_sell, text="Vender", command=self.sell_mode, bg=self.ORANGE, fg=self.WHITE)
         self.seller_mode.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
-        # Remove 'Egresos'
-        try:
-            self.category_entry.destroy()
-            self.category_label.destroy()
-            self.description_entry.destroy()
-            self.description_label.destroy()
-            self.amount_paid_entry.destroy()
-            self.amount_paid_label.destroy()
-            self.payment_type.destroy()
-            self.register_expense.destroy()
-            self.frame3_admin_page.destroy()
-            self.frame4_admin_page.destroy()
-            self.frame5_admin_page.destroy()
-            self.frame6_admin_page.destroy()
-        except AttributeError:
-            pass
+        self.image_button = Button(self.frame3_sell, image=self.image, borderwidth=3)
+        self.image_button.place(relwidth=.96, relheight=1)
+
+    def get_expired_users(self):
+        self.check_students()
 
     def admin_ask_password(self):
         self.remove_everything()
