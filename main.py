@@ -13,6 +13,7 @@ from PIL import Image, ImageTk
 root = Tk()
 root.geometry('%dx%d' % (root.winfo_screenwidth(), root.winfo_screenheight()))
 
+
 # Main Loop
 class FrontEnd:
     def __init__(self):
@@ -356,6 +357,23 @@ class FrontEnd:
         except AttributeError:
             pass
 
+        # Remove 'Renovar usuarios'
+        try:
+            self.reason_of_payment.destroy()
+            self.amount_paid_entry.destroy()
+            self.amount_paid_label.destroy()
+            self.user_name_entry.destroy()
+            self.user_id_entry.destroy()
+            self.payment_type.destroy()
+            self.frame1_renew_user.destroy()
+            self.frame2_renew_user.destroy()
+            self.frame3_renew_user.destroy()
+            self.frame4_renew_user.destroy()
+            self.frame5_renew_user.destroy()
+            self.frame6_renew_user.destroy()
+        except AttributeError:
+            pass
+
     def main_page(self):
         self.remove_everything()
         self.return_button.destroy()
@@ -502,7 +520,9 @@ class FrontEnd:
                 json.dump(self.complete_students_data, open('Students.txt', 'w'))
 
         # Take user from checked_students
-        for i in self.checked_students:
+        for i in range(len(self.checked_students)):
+            if user_id == self.checked_students[i][0]:
+                self.checked_students.pop(i)
 
         # Return to expired page
         self.get_expired_users()
@@ -1312,6 +1332,9 @@ class FrontEnd:
                         ws.cell(row=2, column=5, value=description)
                         self.wb.save('income_expenses.xlsx')
                         self.wb = openpyxl.load_workbook('income_expenses.xlsx')
+                    for i in range(len(self.checked_students)):
+                        if self.checked_students[i] == user_id:
+                            self.checked_students.pop(i)
                     self.selected_payment_type = 0
                     self.complete_students_data.pop(counter)
                     counter2 = 1
