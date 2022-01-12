@@ -64,12 +64,59 @@ class FrontEnd:
             self.complete_classes_data = json.load(open('Available_Classes.txt', 'r'))
         except:
             self.complete_classes_data = []
+        try:
+            self.checked_students = json.load(open('Checked_students.txt', 'r'))
+        except:
+            self.checked_students = []
 
         # Labels presented
         self.list_of_labels = []
 
         # Listbox Selections
         self.listbox_selection = 0
+
+        # Call check students and email
+        self.check_students(email=True)
+
+    def check_students(self, email=False):
+        ready_for_email = []
+        for i in self.complete_students_data:
+            counter = 0
+            inscription_date = i[8]
+            monthly_payment = i[9]
+            current_day = datetime.now()
+            one_year_day = current_day.strftime('%d/%m/%y')
+            one_year_day = one_year_day.replace(str(current_day.year)[-2:], str(current_day.year + 1)[-2:])
+            alternative_day = datetime.now()
+            alternative_day = f'{alternative_day.day}/{alternative_day.strftime("%m")}/{alternative_day.year+1}'
+
+            # Check Inscription Date
+            if inscription_date == one_year_day or inscription_date == alternative_day:
+                for p in self.checked_students:
+                    # Check if it is from the past
+                    try:
+                        if p[0] == i[0]:
+                            counter = 1
+                    except IndexError:
+                        pass
+                # If it is not from the past append it
+                if counter == 0:
+                    self.checked_students.append([i[0], i[1], i[8]])
+                    ready_for_email.append([i[0], i[1], i[8]])
+
+            # Check Monthly Payment
+            if monthly_payment == one_year_day or monthly_payment == alternative_day:
+                for p in self.checked_students:
+                    # Check if it is from the past
+                    try:
+                        if p[0] == i[0]:
+                            counter = 1
+                    except IndexError:
+                        pass
+                # If it is not from the past append it
+                if counter == 0:
+                    self.checked_students.append([i[0], i[1], i[9]])
+                    ready_for_email.append([i[0], i[1], i[9]])
 
     def remove_everything(self):
         # Remove 'Clases'
