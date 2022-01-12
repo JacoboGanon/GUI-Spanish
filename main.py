@@ -16,6 +16,7 @@ root.geometry('%dx%d' % (root.winfo_screenwidth(), root.winfo_screenheight()))
 # Main Loop
 class FrontEnd:
     def __init__(self):
+        self.selected_reason_of_payment = 0
         self.days_per_month = {
             1: 31,
             2: 28,
@@ -407,8 +408,104 @@ class FrontEnd:
         self.renew_user.place(relx=.05, rely=.1, relwidth=.9, relheight=.8)
 
     def renew_user_interface(self):
-        self.remove_everything()
+        # Get User information
         get_user = self.expired_users.get(self.expired_users.curselection())
+        for i in range(len(self.complete_students_data)):
+            if self.complete_students_data[i][1] == get_user:
+                user_id = self.complete_students_data[i][0]
+
+        # Remove everything
+        self.remove_everything()
+        # Create 4 Frames
+        self.frame1_renew_user = Frame(root, bg=self.GREY)
+        self.frame1_renew_user.place(relx=self.width4_1-.15, rely=self.height2_1-.05, relwidth=.2, relheight=.1)
+        self.frame2_renew_user = Frame(root, bg=self.GREY)
+        self.frame2_renew_user.place(relx=self.width4_2-.125, rely=self.height2_1-.05, relwidth=.2, relheight=.1)
+        self.frame3_renew_user = Frame(root, bg=self.GREY)
+        self.frame3_renew_user.place(relx=self.width4_3-.1, rely=self.height2_1-.05, relwidth=.2, relheight=.1)
+        self.frame4_renew_user = Frame(root, bg=self.GREY)
+        self.frame4_renew_user.place(relx=self.width4_4-.075, rely=self.height2_1-.05, relwidth=.2, relheight=.1)
+        self.frame5_renew_user = Frame(root, bg=self.GREY)
+        self.frame5_renew_user.place(relx=self.width2_1-.15, rely=self.height2_2-.05, relwidth=.3, relheight=.1)
+        self.frame6_renew_user = Frame(root, bg=self.GREY)
+        self.frame6_renew_user.place(relx=self.width2_2-.15, rely=self.height2_2-.05, relwidth=.3, relheight=.1)
+
+        # Create 3 Entries
+        self.user_name_entry = Entry(self.frame1_renew_user, font=('Times', 20), justify='center')
+        self.user_name_entry.insert(END, get_user)
+        self.user_name_entry.configure(state='readonly')
+        self.user_id_entry = Entry(self.frame2_renew_user, font=('Times', 20), justify='center')
+        self.user_id_entry.insert(END, user_id)
+        self.user_id_entry.configure(state='readonly')
+        self.amount_paid_entry = Entry(self.frame3_renew_user, font=('Times', 20))
+
+        # Create label
+        self.amount_paid_label = Label(self.frame3_renew_user, text='Cantidad Pagada', bg=self.GREY)
+
+        # Create Listbox to check reason of payment
+        self.reason_of_payment = Listbox(self.frame4_renew_user, height=3)
+        self.reason_of_payment.place(relx=.05, rely=.1, relwidth=.9, relheight=.8)
+        self.reason_of_payment.bind('<<ListboxSelect>>', self.get_value3)
+        self.reason_of_payment.insert(0, 'Inscripcion')
+        self.reason_of_payment.insert(1, 'Mensualidad')
+        self.reason_of_payment.insert(2, 'Ambos')
+
+        # Create Listbox for payment type
+        self.payment_type = Listbox(self.frame5_renew_user, height=3)
+        self.reason_of_payment.bind('<<ListboxSelect>>', self.get_value2)
+        self.payment_type.place(relx=.05, rely=.1, relwidth=.9, relheight=.8)
+        for i in range(len(self.payment_types)):
+            self.payment_type.insert(i, self.payment_types[i])
+
+        # Create Button
+        self.renew_user_button = Button(self.frame6_renew_user, text='Renovar', command=self.register_user_renewal)
+
+        # Place Widgets
+        self.user_id_entry.place(relx=.05, rely=.1, relwidth=.9, relheight=.8)
+        self.user_name_entry.place(relx=.05, rely=.1, relwidth=.9, relheight=.8)
+        self.renew_user_button.place(relx=.05, rely=.1, relwidth=.9, relheight=.8)
+        self.amount_paid_label.place(relx=0.05, rely=.5, relwidth=.9, relheight=.4)
+        self.amount_paid_entry.place(relx=0.05, rely=.075, relwidth=0.9, relheight=0.4)
+
+    def register_user_renewal(self):
+        # Get user
+        user_id = self.user_id_entry.get()
+        amount_paid = self.amount_paid_entry.get()
+        reason_of_payment = self.selected_reason_of_payment
+        payment_type = self.selected_payment_type
+        current_time = datetime.now()
+        current_time = current_time.strftime('%d/%m/%y')
+        # Change Students information
+        for i in range(len(self.complete_students_data)):
+            if self.complete_students_data[i][0] == user_id:
+                self.complete_students_data[i][10] = amount_paid
+                ws = self.wb['Ingresos']
+                ws.insert_rows(2)
+                ws.cell(row=2, column=1, value=current_time)
+                ws.cell(row=2, column=2, value=payment_type)
+                ws.cell(row=2, column=3, value=amount_paid)
+                if reason_of_payment == 'both':
+                    self.complete_students_data[i][8] = current_time
+                    self.complete_students_data[i][9] = current_time
+                    ws.cell(row=2, column=4, value='Inscripcion y Mensualidad')
+                    ws.cell(row=2, column=5, value=f'Inscripcion y Mensualidad de {self.complete_students_data[1]}')
+                elif reason_of_payment == 'Mensualidad':
+                    self.complete_students_data[i][9] = current_time
+                    ws.cell(row=2, column=4, value='Mensualidad')
+                    ws.cell(row=2, column=5, value=f'Mensualidad de {self.complete_students_data[1]}')
+                elif reason_of_payment == 'Inscripcion':
+                    self.complete_students_data[i][8] = current_time
+                    ws.cell(row=2, column=4, value='Inscripcion')
+                    ws.cell(row=2, column=5, value=f'Inscripcion de {self.complete_students_data[1]}')
+                self.wb.save('income_expenses.xlsx')
+                self.wb = openpyxl.load_workbook('income_expenses.xlsx')
+                json.dump(self.complete_students_data, open('Students.txt', 'w'))
+
+        # Take user from checked_students
+        for i in self.checked_students:
+
+        # Return to expired page
+        self.get_expired_users()
 
     def admin_ask_password(self):
         self.remove_everything()
@@ -526,6 +623,7 @@ class FrontEnd:
         amount_paid = self.amount_paid_entry.get()
         category = self.category_entry.get()
         description = self.description_entry.get()
+        self.selected_payment_type = 0
         ws = self.wb['Egresos']
         ws.insert_rows(2)
         ws.cell(row=2, column=1, value=current_date)
@@ -972,7 +1070,8 @@ class FrontEnd:
         Label(self.register_products_frame, text=f'Total: {self.total_price}').grid(row=row+1, column=0)
 
     def charge(self):
-        payment_type = self.payment_type
+        payment_type = self.selected_payment_type
+
         if payment_type != 0:
             for i in self.list_of_labels:
                 for p in self.complete_products_data:
@@ -1012,7 +1111,7 @@ class FrontEnd:
                     self.wb.save('income_expenses.xlsx')
                     self.wb = openpyxl.load_workbook('income_expenses.xlsx')
                 self.list_of_labels.clear()
-                self.payment_type = 0
+                self.selected_payment_type = 0
 
     def clear(self):
         for i in self.register_products_frame.winfo_children():
@@ -1213,6 +1312,7 @@ class FrontEnd:
                         ws.cell(row=2, column=5, value=description)
                         self.wb.save('income_expenses.xlsx')
                         self.wb = openpyxl.load_workbook('income_expenses.xlsx')
+                    self.selected_payment_type = 0
                     self.complete_students_data.pop(counter)
                     counter2 = 1
                 counter += 1
@@ -1247,6 +1347,7 @@ class FrontEnd:
                 ws.cell(row=2, column=5, value=description)
                 self.wb.save('income_expenses.xlsx')
                 self.wb = openpyxl.load_workbook('income_expenses.xlsx')
+            self.selected_payment_type = 0
             self.complete_students_data.append([user_id, user_name, birthday, parent_address, parent_telephone, parent_email, father_name, mother_name, inscription_date, payment_date, amount_paid, amount_of_hours, security_link])
             json.dump(self.complete_students_data, open('Students.txt', 'w'))
             # Create Frame for main grid
@@ -1431,6 +1532,12 @@ class FrontEnd:
     def get_value2(self, event):
         try:
             self.selected_payment_type = self.payment_type.get(self.payment_type.curselection())
+        except:
+            pass
+
+    def get_value3(self, event):
+        try:
+            self.selected_reason_of_payment = self.reason_of_payment.get(self.reason_of_payment.curselection())
         except:
             pass
 
