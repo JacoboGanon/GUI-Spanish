@@ -4,6 +4,9 @@ from tkinter.ttk import Combobox, Checkbutton
 import openpyxl
 from datetime import datetime
 import json
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 # Create Window
 root = Tk()
@@ -86,12 +89,15 @@ class FrontEnd:
             monthly_payment = i[9]
             current_day = datetime.now()
             one_year_day = current_day.strftime('%d/%m/%y')
-            one_year_day = one_year_day.replace(str(current_day.year)[-2:], str(current_day.year + 1)[-2:])
+            one_year_day = one_year_day.replace(str(current_day.year)[-2:], str(current_day.year - 1)[-2:])
             alternative_day = datetime.now()
-            alternative_day = f'{alternative_day.day}/{alternative_day.strftime("%m")}/{alternative_day.year+1}'
+            alternative_day_one_year = f'{alternative_day.strftime("%d")}/{alternative_day.strftime("%m")}/{alternative_day.year - 1}'
+            one_month_day = f'{current_day.strftime("%d")}/{current_day.month - 1 if current_day.month != 1 else 12}/{current_day.strftime("%y") if current_day.month != 1 else str(current_day.year).replace(str(current_day.year), str(current_day.year-1)[-2])}'
+            alternative_day_one_month = f'{current_day.strftime("%d")}/{current_day.month - 1 if current_day.month != 1 else 12}/{current_day.year if current_day.month != 1 else current_day.year - 1}'
+            monthly_payment = monthly_payment.replace(monthly_payment[3: 5], str(int(monthly_payment[3:5])))
 
             # Check Inscription Date
-            if inscription_date == one_year_day or inscription_date == alternative_day:
+            if inscription_date == one_year_day or inscription_date == alternative_day_one_year:
                 for p in self.checked_students:
                     # Check if it is from the past
                     try:
@@ -101,11 +107,11 @@ class FrontEnd:
                         pass
                 # If it is not from the past append it
                 if counter == 0:
-                    self.checked_students.append([i[0], i[1], i[8]])
-                    ready_for_email.append([i[0], i[1], i[8]])
+                    self.checked_students.append([i[0], i[1], i[8], 'Inscripcion'])
+                    ready_for_email.append([i[0], i[1], i[8], 'Inscripcion'])
 
             # Check Monthly Payment
-            if monthly_payment == one_year_day or monthly_payment == alternative_day:
+            if monthly_payment == one_month_day or monthly_payment == alternative_day_one_month:
                 for p in self.checked_students:
                     # Check if it is from the past
                     try:
@@ -115,8 +121,38 @@ class FrontEnd:
                         pass
                 # If it is not from the past append it
                 if counter == 0:
-                    self.checked_students.append([i[0], i[1], i[9]])
-                    ready_for_email.append([i[0], i[1], i[9]])
+                    self.checked_students.append([i[0], i[1], i[9], 'Mensualidad'])
+                    ready_for_email.append([i[0], i[1], i[9], 'Mensualidad'])
+        json.dump(self.checked_students, open('Checked_students.txt', 'w'))
+        if email:
+            message = ''''''
+            for i in range(len(self.checked_students)):
+                for p in range(len(self.checked_students[i])):
+                    if p == len(self.checked_students[i]) - 1:
+                        message += self.checked_students[i][p] + '.'
+                    else:
+                        message += self.checked_students[i][p] + ', '
+                if i != len(self.checked_students) - 1:
+                    message += '\n'
+            # Check that message is not empty
+            if message != '':
+                email = 'flicflac410@gmail.com'
+                password = '231483a.H8243'
+                send_to_emails = ['flicflac410@gmail.com']
+                subject = 'Flic Flac Records'
+                server = smtplib.SMTP('smtp.gmail.com', 587)
+                server.starttls()
+                server.login(email, password)
+                for i in send_to_emails:
+                    msg = MIMEMultipart()
+                    msg['From'] = email
+                    msg['To'] = i
+                    msg['Subject'] = subject
+
+                    msg.attach(MIMEText(message, 'plain'))
+                    text = msg.as_string()
+                    server.sendmail(email, i, text)
+                server.quit()
 
     def remove_everything(self):
         # Remove 'Clases'

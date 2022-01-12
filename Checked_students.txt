@@ -1,0 +1,1 @@
+[["0001", "Mijael Ganon Moragrega", "12/12/2021", "Mensualidad"], ["0000", "Jacobo Ganon Moragrega", "12/01/21", "Inscripcion"]]
