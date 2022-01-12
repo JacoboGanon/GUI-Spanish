@@ -13,6 +13,11 @@ from PIL import Image, ImageTk
 root = Tk()
 root.geometry('%dx%d' % (root.winfo_screenwidth(), root.winfo_screenheight()))
 
+# Create Student Calendar Sheet
+wb = openpyxl.load_workbook('income_expenses.xlsx')
+wb.create_sheet('Estudiantes')
+wb.save('income_expenses.xlsx')
+
 
 # Main Loop
 class FrontEnd:
