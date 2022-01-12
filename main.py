@@ -13,11 +13,6 @@ from PIL import Image, ImageTk
 root = Tk()
 root.geometry('%dx%d' % (root.winfo_screenwidth(), root.winfo_screenheight()))
 
-# Create Student Calendar Sheet
-wb = openpyxl.load_workbook('income_expenses.xlsx')
-wb.create_sheet('Estudiantes')
-wb.save('income_expenses.xlsx')
-
 
 # Main Loop
 class FrontEnd:
@@ -1625,6 +1620,11 @@ class FrontEnd:
                                     Label(self.frame16_add_student, text=i[p][4], bg='#9fb5b7').grid(row=5, column=column, padx=30)
     def register_graph(self):
         days_of_week = ('Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes')
+        ws = self.wb['Estudiantes']
+        ws.cell(row=2, column=2, value=self.user_name_entry.get())
+        ws.cell(row=3, column=2, value='Dias de Semana')
+        ws.cell(row=4, column=2, value='Maestro')
+        ws.cell(row=5, column=2, value='Horarios')
         for column in range(1, len(self.complete_classes_data) + 1):
             not_empty = True
             for i in self.frame16_add_student.winfo_children():
@@ -1679,7 +1679,7 @@ class FrontEnd:
                                                 self.not_available.destroy()
                                             except AttributeError:
                                                 pass
-
+                write = False
                 for i in self.complete_classes_data:
                     if activity == i[0]:
                         for x in range(len(day_list)):
@@ -1691,9 +1691,26 @@ class FrontEnd:
                                             json.dump(self.complete_classes_data, open('Available_Classes.txt', 'w'))
                                             for z in range(len(self.complete_students_data)):
                                                 if self.complete_students_data[z][0] == self.user_id_entry.get():
+                                                    write = True
                                                     self.complete_students_data[z].append([activity, days_of_week[x], y, teacher])
                                                     json.dump(self.complete_students_data, open('Students.txt', 'w'))
+                if write:
+                    days = ''
+                    time_as_string = ''
+                    for i in range(len(day_list)):
+                        if day_list[i]:
+                            days += days_of_week[i] + ' '
+                    for i in times:
+                        time_as_string += i + ' '
+                    ws.cell(row=2, column=column + 1, value=activity)
+                    ws.cell(row=3, column=column + 1, value=days)
+                    ws.cell(row=4, column=column + 1, value=teacher)
+                    ws.cell(row=5, column=column + 1, value=time_as_string)
 
+        ws.insert_rows(2)
+        ws.insert_rows(2)
+        self.wb.save('income_expenses.xlsx')
+        self.wb = openpyxl.load_workbook('income_expenses.xlsx')
 
 
 if __name__ == '__main__':
