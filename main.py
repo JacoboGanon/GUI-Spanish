@@ -144,7 +144,7 @@ class FrontEnd:
             # Check Monthly Payment
             if monthly_payment_year < current_date.year:
                 if current_date.month == 1:
-                    if monthly_payment_month == 12 and monthly_payment_day < current_date.day:
+                    if monthly_payment_month == 12 and monthly_payment_day <= current_date.day:
                         monthly_payment_month = 0
                         monthly_payment_day = 0
                     elif monthly_payment_month != 12:
@@ -159,7 +159,6 @@ class FrontEnd:
                 monthly_payment_day = 0
 
             if monthly_payment_month < current_date.month and monthly_payment_day < current_date.day:
-                print('Hello World! Monthly')
                 for p in self.checked_students:
                     # Check if it is from the past
                     try:
@@ -204,6 +203,15 @@ class FrontEnd:
                 server.quit()
 
     def remove_everything(self):
+        # Remove Expired users interface
+        try:
+            self.expired_users.destroy()
+            self.renew_user.destroy()
+            self.frame1_expired_users.destroy()
+            self.frame2_expired_users.destroy()
+        except AttributeError:
+            pass
+
         # Remove 'Clases'
         try:
             self.remove_student_button.destroy()
@@ -370,11 +378,37 @@ class FrontEnd:
         self.admin_mode.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
         self.seller_mode = Button(self.frame2_sell, text="Vender", command=self.sell_mode, bg=self.ORANGE, fg=self.WHITE)
         self.seller_mode.place(relx=0.05, rely=.1, relwidth=0.9, relheight=0.8)
-        self.image_button = Button(self.frame3_sell, image=self.image, borderwidth=3)
+        self.image_button = Button(self.frame3_sell, image=self.image, borderwidth=3, command=self.get_expired_users)
         self.image_button.place(relwidth=.96, relheight=1)
 
     def get_expired_users(self):
+        self.remove_everything()
+        self.image_button.destroy()
+        self.frame3_sell.destroy()
         self.check_students()
+        # Create return button
+        self.return_button = Button(root, text="Regresar", command=self.main_page, bg=self.ORANGE, fg=self.WHITE)
+        self.return_button.place(relwidth=0.13, relheight=0.06)
+
+        # Create 2 main frames
+        self.frame1_expired_users = Frame(root, bg=self.ORANGE)
+        self.frame2_expired_users = Frame(root, bg=self.ORANGE)
+        self.frame1_expired_users.place(relx=self.width2_1-.15, relheight=.8, relwidth=.3, rely=.1)
+        self.frame2_expired_users.place(relx=self.width2_2-.15, relheight=.08, relwidth=.3, rely=self.height1_1-.04)
+
+        # Create Listbox With Expired Users
+        self.expired_users = Listbox(self.frame1_expired_users, height=15)
+        self.expired_users.place(relx=.05, rely=.05, relwidth=.9, relheight=.9)
+        for i in range(len(self.checked_students)):
+            self.expired_users.insert(i, self.checked_students[i][1])
+
+        # Create renew button
+        self.renew_user = Button(self.frame2_expired_users, text="Regresar", command=self.renew_user_interface, fg=self.WHITE)
+        self.renew_user.place(relx=.05, rely=.1, relwidth=.9, relheight=.8)
+
+    def renew_user_interface(self):
+        self.remove_everything()
+        get_user = self.expired_users.get(self.expired_users.curselection())
 
     def admin_ask_password(self):
         self.remove_everything()
